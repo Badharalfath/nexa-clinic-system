@@ -1,31 +1,76 @@
 import axios from 'axios';
 
+// Toggle to switch between mock and real backend
+const USE_MOCK = true;
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
-  headers: { 'Content-Type': 'application/json' }
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor - attach JWT
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+if (USE_MOCK) {
+  // Replace the HTTP adapter with mock handler
+  api.defaults.adapter = async (config) => {
+    const { mockApi } = await import('../mock/mockApi');
 
-// Response interceptor - handle 401
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
+    const method = config.method.toLowerCase();
+    const url = config.baseURL + config.url;
+    // Normalize URL to just the path for matching in mockApi
+    const path = url.replace(/^https?:\/\/[^/]+/, '');
+    // config.data might be string (transformed) or object (raw in adapter)
+    let data = config.data;
+    if (typeof data === 'string') {
+      try { data = JSON.parse(data); } catch { data = null; }
+    }
+    const params = config.params || {};
+
+    console.log(`[Mock] ${method.toUpperCase()} ${path}`, data);
+    const res = await mockApi(method, path, data, params);
+
+    // Build axios-compatible response
+    const response = {
+      data: res.data,
+      status: res.status,
+      statusText: res.status === 200 || res.status === 201 ? 'OK' : 'Error',
+      headers: {},
+      config,
+    };
+
+    // 401 handling (same as real API)
+    if (res.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      // Don't redirect here for initial getMe check
     }
-    return Promise.reject(error);
-  }
-);
+
+    if (res.status >= 400) {
+      return Promise.reject({ response });
+    }
+
+    return response;
+  };
+} else {
+  // Real backend interceptors
+  api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+
+  api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
+      return Promise.reject(error);
+    }
+  );
+}
 
 export default api;
 
