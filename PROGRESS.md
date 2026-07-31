@@ -3,13 +3,14 @@
 ## Phase 0: Setup ✅
 - [x] Create repository (Badharalfath/nexa-clinic-system)
 - [x] Init project structure (backend + frontend skeleton)
-- [ ] Initialize backend (Node.js + Express)
-- [ ] Initialize frontend (React.js + Vite)
+- [x] Initialize backend (Node.js + Express + Sequelize + JWT)
+- [x] Initialize frontend (React.js + Vite)
+- [x] Git identity configured
 
 ## Phase 1: Database Design
 - [ ] ERD (Entity Relationship Diagram)
-- [ ] Database schema (.sql)
-- [ ] Models / Prisma / Sequelize setup
+- [ ] Database schema models (Sequelize)
+- [ ] Migration & seed files
 
 ## Phase 2: Authentication
 - [ ] JWT login/logout
