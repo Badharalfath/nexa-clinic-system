@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { queuesAPI, registrationsAPI } from '../../api/axios';
+import { queuesAPI } from '../../api/axios';
+import Icon from '../../components/Icon';
 
 const statusColors = {
-  menunggu: '#fbbf24',
-  dipanggil: '#22d3ee',
-  pemeriksaan: '#a78bfa',
-  selesai: '#34d399',
-  lewat: '#ef4444',
+  menunggu: '#fef3c7',
+  dipanggil: '#e0f2fe',
+  pemeriksaan: '#ede9fe',
+  selesai: '#dcfce7',
+  lewat: '#fee2e2',
 };
 
 export default function QueuesPage() {
@@ -28,14 +29,14 @@ export default function QueuesPage() {
     try {
       await queuesAPI.call(id);
       fetchQueues();
-    } catch (err) { alert(err.response?.data?.message || 'Failed'); }
+    } catch (err) { alert(err.response?.data?.message || 'Gagal'); }
   };
 
   const handleStatus = async (id, status) => {
     try {
       await queuesAPI.updateStatus(id, status);
       fetchQueues();
-    } catch (err) { alert(err.response?.data?.message || 'Failed'); }
+    } catch (err) { alert(err.response?.data?.message || 'Gagal'); }
   };
 
   const grouped = {
@@ -50,7 +51,9 @@ export default function QueuesPage() {
     <div>
       <div className="page-header">
         <h2 className="page-title">Antrean Pasien</h2>
-        <button className="btn btn-secondary" onClick={fetchQueues}>🔄 Refresh</button>
+        <button className="btn btn-secondary" onClick={fetchQueues}>
+          <Icon name="refresh" size={15} /> Segarkan
+        </button>
       </div>
 
       <div className="queue-board">
@@ -63,10 +66,14 @@ export default function QueuesPage() {
               <div key={q.id} className="queue-card">
                 <div className="queue-number">{q.queueNumber}</div>
                 <div className="queue-patient">{q.registration?.patient?.name}</div>
-                <div className="queue-meta">{q.registration?.polyclinic?.name} — {q.registration?.doctor?.name}</div>
+                <div className="queue-meta">{q.registration?.polyclinic?.name} · {q.registration?.doctor?.name}</div>
                 <div className="queue-actions">
-                  <button className="btn-sm btn-primary" onClick={() => handleCall(q.id)}>📞 Panggil</button>
-                  <button className="btn-sm btn-danger" onClick={() => handleStatus(q.id, 'lewat')}>⏭ Lewati</button>
+                  <button className="btn-sm btn-primary" onClick={() => handleCall(q.id)}>
+                    <Icon name="phone" size={12} /> Panggil
+                  </button>
+                  <button className="btn-sm btn-danger" onClick={() => handleStatus(q.id, 'lewat')}>
+                    <Icon name="skip" size={12} /> Lewati
+                  </button>
                 </div>
               </div>
             ))}
@@ -84,7 +91,9 @@ export default function QueuesPage() {
                 <div className="queue-number">{q.queueNumber}</div>
                 <div className="queue-patient">{q.registration?.patient?.name}</div>
                 <div className="queue-meta">{q.registration?.polyclinic?.name}</div>
-                <button className="btn-sm btn-primary" onClick={() => handleStatus(q.id, 'pemeriksaan')}>🔽 Mulai Periksa</button>
+                <button className="btn-sm btn-primary" onClick={() => handleStatus(q.id, 'pemeriksaan')}>
+                  <Icon name="arrowDown" size={12} /> Mulai Periksa
+                </button>
               </div>
             ))}
             {grouped.dipanggil.length === 0 && <p className="empty-queue">Kosong</p>}
@@ -101,7 +110,9 @@ export default function QueuesPage() {
                 <div className="queue-number">{q.queueNumber}</div>
                 <div className="queue-patient">{q.registration?.patient?.name}</div>
                 <div className="queue-meta">{q.registration?.polyclinic?.name}</div>
-                <button className="btn-sm btn-success" onClick={() => handleStatus(q.id, 'selesai')}>✅ Selesai</button>
+                <button className="btn-sm btn-success" onClick={() => handleStatus(q.id, 'selesai')}>
+                  <Icon name="check" size={12} /> Selesai
+                </button>
               </div>
             ))}
             {grouped.pemeriksaan.length === 0 && <p className="empty-queue">Kosong</p>}

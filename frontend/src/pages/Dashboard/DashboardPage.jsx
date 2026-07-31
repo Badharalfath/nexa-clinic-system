@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { dashboardAPI } from '../../api/axios';
+import Icon from '../../components/Icon';
 
 const cards = [
-  { key: 'totalPatients', label: 'Total Pasien', icon: '👥', color: '#22d3ee' },
-  { key: 'todayPatients', label: 'Pasien Hari Ini', icon: '📅', color: '#34d399' },
-  { key: 'todayQueues', label: 'Antrean Aktif', icon: '🔢', color: '#fbbf24' },
-  { key: 'waitingPatients', label: 'Menunggu', icon: '⏳', color: '#fb923c' },
-  { key: 'completedPatients', label: 'Selesai', icon: '✅', color: '#a78bfa' },
+  { key: 'totalPatients', label: 'Total Pasien', icon: 'users', tint: 'tint-teal' },
+  { key: 'todayPatients', label: 'Pasien Hari Ini', icon: 'calendar', tint: 'tint-blue' },
+  { key: 'todayQueues', label: 'Antrean Aktif', icon: 'queue', tint: 'tint-amber' },
+  { key: 'waitingPatients', label: 'Menunggu', icon: 'clock', tint: 'tint-orange' },
+  { key: 'completedPatients', label: 'Selesai', icon: 'checkCircle', tint: 'tint-green' },
 ];
 
 export default function DashboardPage() {
@@ -27,8 +28,10 @@ export default function DashboardPage() {
       <h2 className="page-title">Dashboard</h2>
       <div className="stats-grid">
         {cards.map(card => (
-          <div key={card.key} className="stat-card" style={{ borderLeftColor: card.color }}>
-            <div className="stat-icon" style={{ background: card.color + '20' }}>{card.icon}</div>
+          <div key={card.key} className="stat-card">
+            <div className={`stat-icon ${card.tint}`}>
+              <Icon name={card.icon} size={24} />
+            </div>
             <div className="stat-info">
               <span className="stat-value">{data?.[card.key] ?? 0}</span>
               <span className="stat-label">{card.label}</span>

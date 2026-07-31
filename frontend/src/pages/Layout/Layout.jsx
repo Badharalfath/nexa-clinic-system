@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import Icon from '../../components/Icon';
 
 const navItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: '📊', roles: ['administrator', 'dokter', 'petugas_pendaftaran'] },
-  { path: '/patients', label: 'Pasien', icon: '👤', roles: ['administrator', 'petugas_pendaftaran'] },
-  { path: '/registrations', label: 'Pendaftaran', icon: '📋', roles: ['administrator', 'petugas_pendaftaran'] },
-  { path: '/queues', label: 'Antrean', icon: '🔢', roles: ['administrator', 'petugas_pendaftaran', 'dokter'] },
-  { path: '/examination', label: 'Pemeriksaan', icon: '🩺', roles: ['dokter'] },
-  { path: '/history', label: 'Riwayat', icon: '📄', roles: ['dokter', 'administrator'] },
+  { path: '/dashboard', label: 'Dashboard', icon: 'dashboard', roles: ['administrator', 'dokter', 'petugas_pendaftaran'] },
+  { path: '/patients', label: 'Pasien', icon: 'users', roles: ['administrator', 'petugas_pendaftaran'] },
+  { path: '/registrations', label: 'Pendaftaran', icon: 'clipboard', roles: ['administrator', 'petugas_pendaftaran'] },
+  { path: '/queues', label: 'Antrean', icon: 'queue', roles: ['administrator', 'petugas_pendaftaran', 'dokter'] },
+  { path: '/examination', label: 'Pemeriksaan', icon: 'activity', roles: ['dokter'] },
+  { path: '/history', label: 'Riwayat', icon: 'fileText', roles: ['dokter', 'administrator'] },
 ];
 
 export default function Layout() {
@@ -39,11 +40,11 @@ export default function Layout() {
       {sidebarOpen && (
         <aside className="sidebar">
           <div className="sidebar-header">
-            <div className="logo-mark">
-              <span className="cross" />
+            <div className="logo-mark" aria-hidden="true">
+              <span className="logo-glyph">K+</span>
             </div>
             <div className="brand-text">
-              <h2>Klinik Sehat</h2>
+              <h2>Klinik<span className="brand-accent">Sehat</span></h2>
               <p className="sidebar-sub">Sistem Informasi Klinik</p>
             </div>
           </div>
@@ -54,7 +55,7 @@ export default function Layout() {
                 to={item.path}
                 className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
               >
-                <span>{item.icon}</span>
+                <Icon name={item.icon} size={18} className="nav-icon" />
                 <span>{item.label}</span>
               </Link>
             ))}
@@ -69,14 +70,17 @@ export default function Layout() {
               </div>
               <small className="text-muted">{roleLabel[user?.role]}</small>
             </div>
-            <button onClick={handleLogout} className="btn-logout">Logout</button>
+            <button onClick={handleLogout} className="btn-logout">
+              <Icon name="logout" size={15} />
+              Logout
+            </button>
           </div>
         </aside>
       )}
       <main className="main-content">
         <header className="topbar">
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="btn-toggle">
-            {sidebarOpen ? '✕' : '☰'}
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="btn-toggle" aria-label="Toggle sidebar">
+            <Icon name={sidebarOpen ? 'close' : 'menu'} size={17} />
           </button>
           <span className="topbar-title">
             {navItems.find(n => n.path === location.pathname)?.label || 'Dashboard'}
