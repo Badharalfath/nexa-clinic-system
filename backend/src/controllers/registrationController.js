@@ -35,10 +35,11 @@ const getRegistrations = async (req, res) => {
 
 const createRegistration = async (req, res) => {
   try {
-    const { patientId, doctorId, polyclinicId, paymentType, complaint } = req.body;
+    const { patientId, doctorId, polyclinicId, paymentType, complaint, registrationDate } = req.body;
 
     const registration = await Registration.create({
       patientId, doctorId, polyclinicId, paymentType, complaint,
+      registrationDate: registrationDate || new Date(),
       status: 'menunggu'
     });
 

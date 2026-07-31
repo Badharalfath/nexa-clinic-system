@@ -19,7 +19,7 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TYPE user_role AS ENUM ('administrator', 'dokter', 'petugas_pendaftaran');
 CREATE TYPE gender_type AS ENUM ('L', 'P');
 CREATE TYPE payment_type AS ENUM ('umum', 'bpjs', 'asuransi');
-CREATE TYPE registration_status AS ENUM ('menunggu', 'check_up', 'pemeriksaan', 'selesai');
+CREATE TYPE registration_status AS ENUM ('menunggu', 'check_in', 'pemeriksaan', 'selesai');
 CREATE TYPE queue_status AS ENUM ('menunggu', 'dipanggil', 'pemeriksaan', 'selesai', 'lewat');
 
 -- ============================================================

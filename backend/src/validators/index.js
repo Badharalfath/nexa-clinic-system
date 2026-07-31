@@ -25,6 +25,7 @@ const registrationSchema = Joi.object({
   doctorId: Joi.string().uuid().required().messages({ 'any.required': 'Doctor is required' }),
   polyclinicId: Joi.string().uuid().required().messages({ 'any.required': 'Polyclinic is required' }),
   paymentType: Joi.string().valid('umum', 'bpjs', 'asuransi').required().messages({ 'any.required': 'Payment type is required' }),
+  registrationDate: Joi.date().iso().allow(null).messages({ 'date.format': 'Registration date must be a valid date' }),
   complaint: Joi.string().allow('', null)
 });
 

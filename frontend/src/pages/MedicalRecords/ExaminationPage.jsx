@@ -3,6 +3,7 @@ import { referensiAPI, queuesAPI, patientsAPI, medicalRecordsAPI } from '../../a
 import { useAuth } from '../../context/AuthContext';
 import Icon from '../../components/Icon';
 import { formatDate } from '../../utils/format';
+import { statusLabel, statusBadgeClass } from '../../utils/status';
 
 const emptyForm = {
   registrationId: '', patientId: '', doctorId: '',
@@ -117,7 +118,7 @@ export default function ExaminationPage() {
                   onClick={() => selectQueue(q)}>
                   <div className="exam-patient-header">
                     <strong className="queue-num">{q.queueNumber}</strong>
-                    <span className={`badge ${q.status === 'pemeriksaan' ? 'badge-purple' : 'badge-yellow'}`}>{q.status}</span>
+                    <span className={`badge ${statusBadgeClass(q.status)}`}>{statusLabel(q.status)}</span>
                   </div>
                   <div className="queue-patient">{reg?.patient?.name}</div>
                   <small className="queue-meta">{reg?.polyclinic?.name} · {reg?.doctor?.name}</small>
@@ -142,8 +143,8 @@ export default function ExaminationPage() {
                       <h3>{patient.name} <small>({patient.medicalRecordNumber})</small></h3>
                       <p>NIK {patient.nik} · {patient.gender === 'L' ? 'Laki-laki' : 'Perempuan'} · Lahir {formatDate(patient.birthDate)}</p>
                     </div>
-                    <span className={`badge ${selectedQueue.status === 'pemeriksaan' ? 'badge-purple' : 'badge-yellow'}`}>
-                      {selectedQueue.status}
+                    <span className={`badge ${statusBadgeClass(selectedQueue.status)}`}>
+                      {statusLabel(selectedQueue.status)}
                     </span>
                   </div>
                 </div>

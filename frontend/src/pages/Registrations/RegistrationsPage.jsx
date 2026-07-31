@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { registrationsAPI, patientsAPI, referensiAPI } from '../../api/axios';
 import Icon from '../../components/Icon';
 import { formatDate } from '../../utils/format';
+import { statusLabel, statusBadgeClass } from '../../utils/status';
+
+const today = () => new Date().toISOString().split('T')[0];
 
 export default function RegistrationsPage() {
   const [registrations, setRegistrations] = useState([]);
@@ -13,7 +16,7 @@ export default function RegistrationsPage() {
   const [doctors, setDoctors] = useState([]);
   const [polyclinics, setPolyclinics] = useState([]);
   const [form, setForm] = useState({
-    patientId: '', doctorId: '', polyclinicId: '',
+    patientId: '', doctorId: '', polyclinicId: '', registrationDate: today(),
     paymentType: 'umum', complaint: ''
   });
   const [error, setError] = useState('');
@@ -59,7 +62,7 @@ export default function RegistrationsPage() {
   }, [page]);
 
   const openCreate = () => {
-    setForm({ patientId: '', doctorId: '', polyclinicId: '', paymentType: 'umum', complaint: '' });
+    setForm({ patientId: '', doctorId: '', polyclinicId: '', registrationDate: today(), paymentType: 'umum', complaint: '' });
     setSearchPatient('');
     setError('');
     setShowModal(true);
@@ -117,8 +120,8 @@ export default function RegistrationsPage() {
                   <td>{formatDate(r.registrationDate)}</td>
                   <td><span className="badge badge-blue">{r.paymentType}</span></td>
                   <td>
-                    <span className={`badge ${r.status === 'selesai' ? 'badge-green' : r.status === 'menunggu' ? 'badge-yellow' : 'badge-blue'}`}>
-                      {r.status}
+                    <span className={`badge ${statusBadgeClass(r.status)}`}>
+                      {statusLabel(r.status)}
                     </span>
                   </td>
                   <td><strong className="queue-num">{r.queue?.queueNumber || '—'}</strong></td>
@@ -178,6 +181,11 @@ export default function RegistrationsPage() {
               </div>
               <div className="form-row">
                 <div className="form-group">
+                  <label htmlFor="registrationDate">Tanggal Kunjungan <span className="req">*</span></label>
+                  <input id="registrationDate" type="date" value={form.registrationDate}
+                    onChange={e => setForm({...form, registrationDate: e.target.value})} required />
+                </div>
+                <div className="form-group">
                   <label htmlFor="paymentType">Jenis Pembayaran</label>
                   <select id="paymentType" value={form.paymentType} onChange={e => setForm({...form, paymentType: e.target.value})}>
                     <option value="umum">Umum</option>
@@ -185,10 +193,10 @@ export default function RegistrationsPage() {
                     <option value="asuransi">Asuransi</option>
                   </select>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="complaint">Keluhan Awal</label>
-                  <textarea id="complaint" value={form.complaint} onChange={e => setForm({...form, complaint: e.target.value})} placeholder="Deskripsi keluhan pasien" />
-                </div>
+              </div>
+              <div className="form-group">
+                <label htmlFor="complaint">Keluhan Awal</label>
+                <textarea id="complaint" value={form.complaint} onChange={e => setForm({...form, complaint: e.target.value})} placeholder="Deskripsi keluhan pasien" />
               </div>
               <div className="modal-actions">
                 <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Batal</button>

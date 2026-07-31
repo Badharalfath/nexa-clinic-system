@@ -23,7 +23,7 @@ const Registration = sequelize.define('registrations', {
     allowNull: true
   },
   status: {
-    type: DataTypes.ENUM('menunggu', 'check_up', 'pemeriksaan', 'selesai'),
+    type: DataTypes.ENUM('menunggu', 'check_in', 'pemeriksaan', 'selesai'),
     allowNull: false,
     defaultValue: 'menunggu'
   }

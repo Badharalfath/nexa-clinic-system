@@ -63,7 +63,7 @@ const updateQueueStatus = async (req, res) => {
     await queue.update({ status, calledAt: status === 'dipanggil' ? new Date() : queue.calledAt });
 
     // Also sync registration status
-    const statusMap = { dipanggil: 'check_up', pemeriksaan: 'pemeriksaan', selesai: 'selesai', lewat: 'selesai' };
+    const statusMap = { dipanggil: 'check_in', pemeriksaan: 'pemeriksaan', selesai: 'selesai', lewat: 'selesai' };
     if (statusMap[status]) {
       await Registration.update({ status: statusMap[status] }, { where: { id: queue.registrationId } });
     }

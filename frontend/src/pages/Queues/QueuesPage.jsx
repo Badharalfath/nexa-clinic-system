@@ -55,13 +55,39 @@ export default function QueuesPage() {
     lewat: queues.filter(q => q.status === 'lewat'),
   };
 
+  // Next patient in line = first waiting card (queue list sorted by number)
+  const nextWaiting = grouped.menunggu[0] || null;
+
+  const handleCallNext = async () => {
+    if (!nextWaiting) return;
+    try {
+      await queuesAPI.call(nextWaiting.id);
+      fetchQueues();
+    } catch (err) { alert(err.response?.data?.message || 'Gagal memanggil antrean'); }
+  };
+
+  const nextInLine = nextWaiting?.registration?.patient?.name
+    ? `${nextWaiting.queueNumber} — ${nextWaiting.registration.patient.name}`
+    : nextWaiting?.queueNumber || null;
+
   return (
     <div>
       <div className="page-header">
         <h2 className="page-title">Antrean Pasien</h2>
-        <button className="btn btn-secondary" onClick={fetchQueues}>
-          <Icon name="refresh" size={15} /> Segarkan
-        </button>
+        <div className="page-header-actions">
+          <button
+            className={`btn btn-primary ${!nextWaiting ? 'btn-disabled' : ''}`}
+            onClick={handleCallNext}
+            disabled={!nextWaiting}
+            title={nextInLine ? `Panggil ${nextInLine}` : 'Tidak ada pasien menunggu'}
+          >
+            <Icon name="phone" size={15} /> Panggil Berikutnya
+            {nextInLine && <span className="next-chip">{nextInLine}</span>}
+          </button>
+          <button className="btn btn-secondary" onClick={fetchQueues}>
+            <Icon name="refresh" size={15} /> Segarkan
+          </button>
+        </div>
       </div>
 
       <div className="queue-board">
@@ -70,8 +96,9 @@ export default function QueuesPage() {
             <strong>Menunggu</strong> <span className="queue-count">{grouped.menunggu.length}</span>
           </div>
           <div className="queue-list">
-            {grouped.menunggu.map(q => (
-              <div key={q.id} className="queue-card">
+            {grouped.menunggu.map((q, idx) => (
+              <div key={q.id} className={`queue-card ${idx === 0 ? 'next-up' : ''}`}>
+                {idx === 0 && <span className="next-up-tag">Berikutnya</span>}
                 <div className="queue-number">{q.queueNumber}</div>
                 <div className="queue-patient">{q.registration?.patient?.name}</div>
                 <div className="queue-meta">{q.registration?.polyclinic?.name} · {q.registration?.doctor?.name}</div>

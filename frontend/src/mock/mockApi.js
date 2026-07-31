@@ -180,7 +180,7 @@ export async function mockApi(method, url, data = null, params = {}) {
       patientId: data.patientId,
       doctorId: data.doctorId,
       polyclinicId: data.polyclinicId,
-      registrationDate: new Date().toISOString().split('T')[0],
+      registrationDate: data.registrationDate || new Date().toISOString().split('T')[0],
       paymentType: data.paymentType,
       complaint: data.complaint || '',
       status: 'menunggu',
@@ -242,7 +242,7 @@ export async function mockApi(method, url, data = null, params = {}) {
     s.queues[qIdx].calledAt = new Date().toISOString();
     // Sync registration
     const regIdx = s.registrations.findIndex(r => r.id === s.queues[qIdx].registrationId);
-    if (regIdx !== -1) s.registrations[regIdx].status = 'check_up';
+    if (regIdx !== -1) s.registrations[regIdx].status = 'check_in';
     return { status: 200, data: { success: true, data: clone(s.queues[qIdx]), message: 'Queue called' } };
   }
 
@@ -252,7 +252,7 @@ export async function mockApi(method, url, data = null, params = {}) {
     if (qIdx === -1) return { status: 404, data: { success: false, message: 'Queue not found' } };
     s.queues[qIdx].status = data.status;
     // Sync registration
-    const statusMap = { dipanggil: 'check_up', pemeriksaan: 'pemeriksaan', selesai: 'selesai', lewat: 'selesai' };
+    const statusMap = { dipanggil: 'check_in', pemeriksaan: 'pemeriksaan', selesai: 'selesai', lewat: 'selesai' };
     const regIdx = s.registrations.findIndex(r => r.id === s.queues[qIdx].registrationId);
     if (regIdx !== -1 && statusMap[data.status]) {
       s.registrations[regIdx].status = statusMap[data.status];
