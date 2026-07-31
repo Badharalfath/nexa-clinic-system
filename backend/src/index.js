@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const { connectDB } = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,6 +19,13 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'Server is running', data: null });
 });
+
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/patients', require('./routes/patients'));
+app.use('/api/registrations', require('./routes/registrations'));
+app.use('/api/queues', require('./routes/queues'));
+app.use('/api/medical-records', require('./routes/medicalRecords'));
+app.use('/api/dashboard', require('./routes/dashboard'));
 
 // Error handler
 app.use((err, req, res, next) => {
@@ -38,8 +46,14 @@ app.use((req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Start server
+const startServer = async () => {
+  await connectDB();
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
+
+startServer();
 
 module.exports = app;

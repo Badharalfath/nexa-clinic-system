@@ -12,36 +12,45 @@
 - [x] Database schema models (8 Sequelize models)
 - [x] Associations & relations defined
 - [x] SQL schema file with auto-generate triggers & seed data
-- [ ] Migration script (sync)
+- [x] Sync & seed scripts
 
-## Phase 2: Authentication
-- [ ] Auth controller & routes (login/logout)
-- [ ] MedicalRecord & Prescription validators
-- [ ] Auth UI (login page)
+## Phase 2: Authentication ✅
+- [x] Auth controller & routes (login/logout/me)
+- [x] JWT middleware (authenticate, authorize by role)
+- [x] Validator for login
 
-## Phase 3: Master Data Pasien
-- [ ] CRUD Patients API
-- [ ] Patient Management UI
+## Phase 3: Master Data Pasien ✅
+- [x] CRUD Patients API (with search & pagination)
+- [x] Patient routes with role authorization
 
-## Phase 4: Pendaftaran Pasien
-- [ ] Registration API
-- [ ] Registration UI
+## Phase 4: Pendaftaran Pasien ✅
+- [x] Registration API (create, list, update)
+- [x] Auto-create queue on registration
 
-## Phase 5: Modul Antrean
-- [ ] Queue API (generate number, call, status)
-- [ ] Queue UI
+## Phase 5: Modul Antrean ✅
+- [x] Queue API (list, call, update status)
+- [x] Auto-sync registration status
 
-## Phase 6: Modul Pemeriksaan Dokter (SOAP)
-- [ ] Medical Records API
-- [ ] Prescription API
-- [ ] Examination UI
+## Phase 6: Modul Pemeriksaan Dokter (SOAP) ✅
+- [x] Medical Records API (create, get by patient, get by id)
+- [x] Prescription API (create, get)
+- [x] Medical Actions (created inline with record)
+- [x] Auto-mark registration as selesai
 
-## Phase 7: Dashboard
-- [ ] Dashboard API
-- [ ] Dashboard UI
+## Phase 7: Dashboard ✅
+- [x] Dashboard API (totals: patients, today, queue, waiting, completed)
 
-## Phase 8: Final
+## Phase 8: Frontend
+- [ ] Login page & Auth context
+- [ ] Dashboard page
+- [ ] Patient management page
+- [ ] Registration page
+- [ ] Queue page
+- [ ] Doctor examination (SOAP) page
+- [ ] Medical history page
+
+## Phase 9: Final
 - [ ] Postman Collection
 - [ ] Video Demo
 - [ ] README.md final
-- [ ] Push to GitHub
+- [ ] Final push
