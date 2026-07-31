@@ -17,40 +17,28 @@
 ## Phase 2: Authentication ✅
 - [x] Auth controller & routes (login/logout/me)
 - [x] JWT middleware (authenticate, authorize by role)
-- [x] Validator for login
+- [x] Login page UI
 
-## Phase 3: Master Data Pasien ✅
-- [x] CRUD Patients API (with search & pagination)
-- [x] Patient routes with role authorization
+## Phase 3-7: Backend API ✅
+- [x] Patients CRUD (with search & pagination)
+- [x] Registrations (auto-create queue)
+- [x] Queue management (call, status, sync registration)
+- [x] Medical Records (SOAP, actions, prescriptions)
+- [x] Dashboard stats
+- [x] Referensi endpoints (doctors, polyclinics)
 
-## Phase 4: Pendaftaran Pasien ✅
-- [x] Registration API (create, list, update)
-- [x] Auto-create queue on registration
-
-## Phase 5: Modul Antrean ✅
-- [x] Queue API (list, call, update status)
-- [x] Auto-sync registration status
-
-## Phase 6: Modul Pemeriksaan Dokter (SOAP) ✅
-- [x] Medical Records API (create, get by patient, get by id)
-- [x] Prescription API (create, get)
-- [x] Medical Actions (created inline with record)
-- [x] Auto-mark registration as selesai
-
-## Phase 7: Dashboard ✅
-- [x] Dashboard API (totals: patients, today, queue, waiting, completed)
-
-## Phase 8: Frontend
-- [ ] Login page & Auth context
-- [ ] Dashboard page
-- [ ] Patient management page
-- [ ] Registration page
-- [ ] Queue page
-- [ ] Doctor examination (SOAP) page
-- [ ] Medical history page
+## Phase 8: Frontend ✅
+- [x] Auth context + protected routes
+- [x] Dashboard page (stats cards)
+- [x] Patient management page (CRUD + search + pagination)
+- [x] Registration page (with patient search, doctor/poli select)
+- [x] Queue board (kanban: menunggu → dipanggil → pemeriksaan → selesai)
+- [x] Examination page (SOAP form + medical actions + prescriptions)
+- [x] Medical history page (patient search + history display)
 
 ## Phase 9: Final
 - [ ] Postman Collection
 - [ ] Video Demo
 - [ ] README.md final
+- [ ] .env.example
 - [ ] Final push

@@ -26,6 +26,7 @@ app.use('/api/registrations', require('./routes/registrations'));
 app.use('/api/queues', require('./routes/queues'));
 app.use('/api/medical-records', require('./routes/medicalRecords'));
 app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/api/referensi', require('./routes/referensi'));
 
 // Error handler
 app.use((err, req, res, next) => {

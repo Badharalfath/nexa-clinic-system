@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { Queue, Registration, Patient, User, Polyclinic } = require('../models');
 const ApiResponse = require('../utils/apiResponse');
 
@@ -5,7 +6,10 @@ const getQueues = async (req, res) => {
   try {
     const { status, date } = req.query;
     const where = {};
-    if (status) where.status = status;
+    if (status) {
+      const statuses = status.split(',');
+      where.status = statuses.length === 1 ? statuses[0] : { [Op.in]: statuses };
+    }
 
     const regWhere = {};
     if (date) regWhere.registrationDate = date;
