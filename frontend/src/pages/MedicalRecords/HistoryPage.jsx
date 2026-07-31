@@ -18,7 +18,7 @@ export default function HistoryPage() {
     try {
       const res = await patientsAPI.getAll({ search: q, limit: 10 });
       if (reqId !== reqRef.current) return;
-      setPatients(res.data.data.patients);
+      setPatients(res.data.data.patients || []);
     } catch { if (reqId === reqRef.current) setPatients([]); }
   };
 

@@ -121,7 +121,8 @@ export async function mockApi(method, url, data = null, params = {}) {
       return sortOrder === 'ASC' ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
     });
     const result = paginate(filtered, page, limit);
-    return { status: 200, data: { success: true, data: result } };
+    // Match real backend contract: { patients, pagination }
+    return { status: 200, data: { success: true, data: { patients: result.data, pagination: result.pagination } } };
   }
 
   if (url.startsWith('/api/patients') && method === 'post') {

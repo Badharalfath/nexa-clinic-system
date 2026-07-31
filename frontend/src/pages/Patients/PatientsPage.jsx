@@ -20,8 +20,8 @@ export default function PatientsPage() {
     setLoading(true);
     try {
       const res = await patientsAPI.getAll({ page, limit: 10, search });
-      setPatients(res.data.data.patients);
-      setPagination(res.data.data.pagination);
+      setPatients(res.data.data.patients || []);
+      setPagination(res.data.data.pagination || { total: 0, page: 1, totalPages: 1 });
     } catch (err) {
       console.error(err);
     } finally {
@@ -35,8 +35,8 @@ export default function PatientsPage() {
     patientsAPI.getAll({ page, limit: 10, search })
       .then(res => {
         if (cancelled) return;
-        setPatients(res.data.data.patients);
-        setPagination(res.data.data.pagination);
+        setPatients(res.data.data.patients || []);
+        setPagination(res.data.data.pagination || { total: 0, page: 1, totalPages: 1 });
       })
       .catch(err => { if (!cancelled) console.error(err); })
       .finally(() => { if (!cancelled) setLoading(false); });
