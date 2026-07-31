@@ -28,13 +28,24 @@ export default function Layout() {
     petugas_pendaftaran: { label: 'Petugas', class: 'badge-blue' },
   };
 
+  const roleLabel = {
+    administrator: 'Administrator',
+    dokter: 'Dokter',
+    petugas_pendaftaran: 'Petugas Pendaftaran',
+  };
+
   return (
     <div className="layout">
       {sidebarOpen && (
         <aside className="sidebar">
           <div className="sidebar-header">
-            <h2>🏥 Klinik</h2>
-            <p className="sidebar-sub">Sistem Informasi</p>
+            <div className="logo-mark">
+              <span className="cross" />
+            </div>
+            <div className="brand-text">
+              <h2>Klinik Sehat</h2>
+              <p className="sidebar-sub">Sistem Informasi Klinik</p>
+            </div>
           </div>
           <nav className="sidebar-nav">
             {navItems.filter(n => hasRole(...n.roles)).map(item => (
@@ -49,11 +60,14 @@ export default function Layout() {
             ))}
           </nav>
           <div className="sidebar-footer">
-            <div className="user-info">
-              <span className="user-name">{user?.name}</span>
-              <span className={`badge ${roleBadge[user?.role]?.class}`}>
-                {roleBadge[user?.role]?.label}
-              </span>
+            <div className="user-card">
+              <div className="user-info">
+                <span className="user-name">{user?.name}</span>
+                <span className={`badge ${roleBadge[user?.role]?.class}`}>
+                  {roleBadge[user?.role]?.label}
+                </span>
+              </div>
+              <small className="text-muted">{roleLabel[user?.role]}</small>
             </div>
             <button onClick={handleLogout} className="btn-logout">Logout</button>
           </div>

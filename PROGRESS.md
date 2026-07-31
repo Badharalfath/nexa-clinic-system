@@ -35,10 +35,20 @@
 - [x] Queue board (kanban: menunggu → dipanggil → pemeriksaan → selesai)
 - [x] Examination page (SOAP form + medical actions + prescriptions)
 - [x] Medical history page (patient search + history display)
+- [x] Mock API + mock data (demo mode, USE_MOCK = true)
 
-## Phase 9: Final
+## Phase 8.5: UI Redesign ✅ (approved flow)
+- [x] Light medical theme (teal + clinical white) — Hallmark/Impeccable pass
+- [x] Branding "Klinik Sehat" + medical cross logo + favicon
+- [x] Fonts: Plus Jakarta Sans + Inter
+- [x] Login page redesign + demo account chips (auto-fill)
+- [x] Light theme applied: dashboard, tables, queue board, SOAP form, history
+- [x] Verified in browser (all pages)
+
+## Phase 9: PRD & Docs
+- [x] PRD folder (prd/nexa-clinic-system.prd.md + README) — acuan PDF
+- [ ] README.md final
 - [ ] Postman Collection
 - [ ] Video Demo
-- [ ] README.md final
-- [ ] .env.example
+- [ ] .env.example final check
 - [ ] Final push
