@@ -23,7 +23,15 @@ export default function QueuesPage() {
     finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchQueues(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    queuesAPI.getAll()
+      .then(res => { if (!cancelled) setQueues(res.data.data || []); })
+      .catch(err => { if (!cancelled) console.error(err); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
 
   const handleCall = async (id) => {
     try {

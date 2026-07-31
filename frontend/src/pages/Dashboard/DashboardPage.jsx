@@ -15,10 +15,12 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     dashboardAPI.get()
-      .then(res => setData(res.data.data))
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false));
+      .then(res => { if (!cancelled) setData(res.data.data); })
+      .catch(err => { if (!cancelled) console.error(err); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, []);
 
   if (loading) return <div className="loading">Memuat data...</div>;

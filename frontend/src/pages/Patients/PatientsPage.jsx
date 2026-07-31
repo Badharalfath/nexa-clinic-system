@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { patientsAPI } from '../../api/axios';
 import Icon from '../../components/Icon';
+import { formatDate } from '../../utils/format';
 
 const emptyForm = { nik: '', name: '', gender: 'L', birthDate: '', phone: '', address: '' };
 
@@ -28,7 +29,19 @@ export default function PatientsPage() {
     }
   };
 
-  useEffect(() => { fetchPatients(); }, [page, search]);
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    patientsAPI.getAll({ page, limit: 10, search })
+      .then(res => {
+        if (cancelled) return;
+        setPatients(res.data.data.patients);
+        setPagination(res.data.data.pagination);
+      })
+      .catch(err => { if (!cancelled) console.error(err); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [page, search]);
 
   const openCreate = () => {
     setEditing(null);
@@ -100,7 +113,7 @@ export default function PatientsPage() {
                   <td>{p.nik}</td>
                   <td className="cell-strong">{p.name}</td>
                   <td>{p.gender === 'L' ? 'Laki-laki' : 'Perempuan'}</td>
-                  <td>{new Date(p.birthDate).toLocaleDateString('id-ID')}</td>
+                  <td>{formatDate(p.birthDate)}</td>
                   <td>{p.phone || '—'}</td>
                   <td>
                     <div className="action-cell">

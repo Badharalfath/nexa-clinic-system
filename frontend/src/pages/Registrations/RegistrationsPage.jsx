@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { registrationsAPI, patientsAPI, referensiAPI } from '../../api/axios';
 import Icon from '../../components/Icon';
+import { formatDate } from '../../utils/format';
 
 export default function RegistrationsPage() {
   const [registrations, setRegistrations] = useState([]);
@@ -19,15 +20,18 @@ export default function RegistrationsPage() {
   const [searchPatient, setSearchPatient] = useState('');
 
   useEffect(() => {
+    let cancelled = false;
     Promise.all([
       patientsAPI.getAll({ limit: 1000 }),
       referensiAPI.getDoctors(),
       referensiAPI.getPolyclinics(),
     ]).then(([patRes, docRes, polRes]) => {
+      if (cancelled) return;
       setPatients(patRes.data.data.patients || []);
       setDoctors(docRes.data.data || []);
       setPolyclinics(polRes.data.data || []);
-    }).catch(console.error);
+    }).catch(err => { if (!cancelled) console.error(err); });
+    return () => { cancelled = true; };
   }, []);
 
   const fetchRegistrations = async () => {
@@ -40,7 +44,19 @@ export default function RegistrationsPage() {
     finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchRegistrations(); }, [page]);
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    registrationsAPI.getAll({ page, limit: 10 })
+      .then(res => {
+        if (cancelled) return;
+        setRegistrations(res.data.data.registrations);
+        setPagination(res.data.data.pagination);
+      })
+      .catch(err => { if (!cancelled) console.error(err); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [page]);
 
   const openCreate = () => {
     setForm({ patientId: '', doctorId: '', polyclinicId: '', paymentType: 'umum', complaint: '' });
@@ -98,7 +114,7 @@ export default function RegistrationsPage() {
                   </td>
                   <td>{r.doctor?.name}</td>
                   <td>{r.polyclinic?.name}</td>
-                  <td>{new Date(r.registrationDate).toLocaleDateString('id-ID')}</td>
+                  <td>{formatDate(r.registrationDate)}</td>
                   <td><span className="badge badge-blue">{r.paymentType}</span></td>
                   <td>
                     <span className={`badge ${r.status === 'selesai' ? 'badge-green' : r.status === 'menunggu' ? 'badge-yellow' : 'badge-blue'}`}>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { referensiAPI, queuesAPI, patientsAPI, medicalRecordsAPI } from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import Icon from '../../components/Icon';
+import { formatDate } from '../../utils/format';
 
 const emptyForm = {
   registrationId: '', patientId: '', doctorId: '',
@@ -24,10 +25,12 @@ export default function ExaminationPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     queuesAPI.getAll({ status: ['menunggu', 'dipanggil', 'pemeriksaan'].join(',') })
-      .then(res => setQueues(res.data.data || []))
-      .catch(console.error)
-      .finally(() => setLoading(false));
+      .then(res => { if (!cancelled) setQueues(res.data.data || []); })
+      .catch(err => { if (!cancelled) console.error(err); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, []);
 
   const selectQueue = async (q) => {
@@ -137,7 +140,7 @@ export default function ExaminationPage() {
                   <div className="patient-summary-row">
                     <div>
                       <h3>{patient.name} <small>({patient.medicalRecordNumber})</small></h3>
-                      <p>NIK {patient.nik} · {patient.gender === 'L' ? 'Laki-laki' : 'Perempuan'} · Lahir {new Date(patient.birthDate).toLocaleDateString('id-ID')}</p>
+                      <p>NIK {patient.nik} · {patient.gender === 'L' ? 'Laki-laki' : 'Perempuan'} · Lahir {formatDate(patient.birthDate)}</p>
                     </div>
                     <span className={`badge ${selectedQueue.status === 'pemeriksaan' ? 'badge-purple' : 'badge-yellow'}`}>
                       {selectedQueue.status}
@@ -153,7 +156,7 @@ export default function ExaminationPage() {
                   </summary>
                   {history.map(h => (
                     <div key={h.id} className="history-item">
-                      <small className="text-muted">{new Date(h.createdAt).toLocaleDateString('id-ID')} — Dr. {h.doctor?.name}</small>
+                      <small className="text-muted">{formatDate(h.createdAt)} — Dr. {h.doctor?.name}</small>
                       <p><strong>S:</strong> {h.subjective}</p>
                       <p><strong>A:</strong> {h.assessment}</p>
                     </div>

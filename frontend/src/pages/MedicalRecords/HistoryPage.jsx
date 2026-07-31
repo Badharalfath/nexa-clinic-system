@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { medicalRecordsAPI, patientsAPI } from '../../api/axios';
 import Icon from '../../components/Icon';
+import { formatLongDate, formatCurrency } from '../../utils/format';
 
 export default function HistoryPage() {
   const [search, setSearch] = useState('');
@@ -8,24 +9,29 @@ export default function HistoryPage() {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
+  const reqRef = useRef(0);
 
   const searchPatients = async (q) => {
     if (q.length < 2) return;
+    const reqId = ++reqRef.current;
     setSearch(q);
     try {
       const res = await patientsAPI.getAll({ search: q, limit: 10 });
+      if (reqId !== reqRef.current) return;
       setPatients(res.data.data.patients);
-    } catch { setPatients([]); }
+    } catch { if (reqId === reqRef.current) setPatients([]); }
   };
 
   const selectPatient = async (p) => {
+    const reqId = ++reqRef.current;
     setSelectedPatient(p);
     setLoading(true);
     try {
       const res = await medicalRecordsAPI.getByPatient(p.id);
+      if (reqId !== reqRef.current) return;
       setRecords(res.data.data || []);
-    } catch { setRecords([]); }
-    finally { setLoading(false); }
+    } catch { if (reqId === reqRef.current) setRecords([]); }
+    finally { if (reqId === reqRef.current) setLoading(false); }
   };
 
   return (
@@ -70,7 +76,7 @@ export default function HistoryPage() {
               <div key={r.id} className="history-card">
                 <div className="history-header">
                   <div className="history-header-left">
-                    <strong>{new Date(r.createdAt).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong>
+                    <strong>{formatLongDate(r.createdAt)}</strong>
                     <span className="badge badge-green">{r.registration?.polyclinic?.name}</span>
                   </div>
                   <small>Dr. {r.doctor?.name}</small>
@@ -91,7 +97,7 @@ export default function HistoryPage() {
                     <details>
                       <summary><Icon name="cross" size={12} /> Tindakan Medis ({r.medicalActions.length})</summary>
                       {r.medicalActions.map(a => (
-                        <div key={a.id} className="inline-item">{a.actionName} {a.cost > 0 ? `— Rp ${Number(a.cost).toLocaleString('id-ID')}` : ''}</div>
+                        <div key={a.id} className="inline-item">{a.actionName} {formatCurrency(a.cost)}</div>
                       ))}
                     </details>
                   )}
