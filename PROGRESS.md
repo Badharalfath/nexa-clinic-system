@@ -7,14 +7,17 @@
 - [x] Initialize frontend (React.js + Vite)
 - [x] Git identity configured
 
-## Phase 1: Database Design
-- [ ] ERD (Entity Relationship Diagram)
-- [ ] Database schema models (Sequelize)
-- [ ] Migration & seed files
+## Phase 1: Database Design ✅
+- [x] ERD (Entity Relationship Diagram) — HTML visual
+- [x] Database schema models (8 Sequelize models)
+- [x] Associations & relations defined
+- [x] SQL schema file with auto-generate triggers & seed data
+- [ ] Migration script (sync)
 
 ## Phase 2: Authentication
-- [ ] JWT login/logout
-- [ ] Role-based authorization (Admin, Dokter, Petugas Pendaftaran)
+- [ ] Auth controller & routes (login/logout)
+- [ ] MedicalRecord & Prescription validators
+- [ ] Auth UI (login page)
 
 ## Phase 3: Master Data Pasien
 - [ ] CRUD Patients API

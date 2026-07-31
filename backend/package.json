@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "sync": "node src/sync.js --alter",
+    "sync:force": "node src/sync.js --force --seed"
   },
   "keywords": [
     "clinic",
