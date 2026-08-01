@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const ApiResponse = require('./apiResponse');
+const ApiResponse = require('../utils/apiResponse');
 
 const generateToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, {
