@@ -1,6 +1,24 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
+// Auto-generate medical record number: RM-YYYYMM-XXXX (mirror of SQL trigger)
+async function generateMedicalRecordNumber(patient) {
+  if (patient.medicalRecordNumber) return;
+  const prefix = `RM-${new Date().toISOString().slice(0, 7).replace('-', '')}`;
+  const last = await Patient.findOne({
+    where: { medicalRecordNumber: { [sequelize.Sequelize.Op.like]: `${prefix}-%` } },
+    order: [['medicalRecordNumber', 'DESC']],
+    attributes: ['medicalRecordNumber'],
+    paranoid: false,
+  });
+  let seq = 1;
+  if (last) {
+    const parts = last.medicalRecordNumber.split('-');
+    seq = parseInt(parts[parts.length - 1], 10) + 1;
+  }
+  patient.medicalRecordNumber = `${prefix}-${String(seq).padStart(4, '0')}`;
+}
+
 const Patient = sequelize.define('patients', {
   id: {
     type: DataTypes.UUID,
@@ -39,6 +57,11 @@ const Patient = sequelize.define('patients', {
   address: {
     type: DataTypes.TEXT,
     allowNull: true
+  }
+}, {
+  hooks: {
+    // Must run before validate (Sequelize validates before beforeCreate)
+    beforeValidate: generateMedicalRecordNumber
   }
 });
 
