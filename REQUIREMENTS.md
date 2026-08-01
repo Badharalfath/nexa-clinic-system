@@ -8,8 +8,10 @@ Status values: `Missing`, `Pending`, `In progress`, `Partial`, `Complete`,
 
 | ID | Requirement | Source | Acceptance criteria | Priority | Status |
 |---|---|---|---|---|---|
-| PLAN-REQ-001 | Complete source-to-requirement audit | Product/PRD/DESIGN | Every source item is represented or explicitly excluded with a reason | P0 | Pending |
+| PLAN-REQ-001 | Complete source-to-requirement audit | Product/PRD/DESIGN | Every source item is represented or explicitly excluded with a reason | P0 | In progress |
 
 ## Contradictions and missing acceptance criteria
 
-- None audited yet.
+- PRD version 1.1 is aligned to the PDF, but AS-001 through AS-009 remain open.
+- No `DESIGN.md` source was found.
+- The complete implementation-status inventory has not yet been added here.

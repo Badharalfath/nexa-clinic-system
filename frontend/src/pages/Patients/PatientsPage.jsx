@@ -241,7 +241,7 @@ export default function PatientsPage() {
                     <div key={r.id} className="detail-reg-row">
                       <div>
                         <strong>{r.polyclinic?.name}</strong>
-                        <small className="text-muted"> · Dr. {r.doctor?.name}</small>
+                        <small className="text-muted">{r.doctor?.name}</small>
                       </div>
                       <div className="detail-reg-right">
                         <span className="text-muted">{formatDate(r.registrationDate)}</span>

@@ -16,8 +16,11 @@ Folder ini berisi dokumen acuan (Product Requirements Document) untuk proyek
 
 ## Aturan Penggunaan
 
-1. **PRD ini adalah sumber kebenaran requirement** — setiap implementasi harus mengacu
-   pada FR-ID di PRD agar tidak melenceng dari PDF awal.
-2. Status flow frontend sudah **disetujui user** (per 2026-07-31) — PRD mencerminkan
-   hasil review tersebut.
-3. Perubahan requirement → update PRD (bump versi) sebelum implementasi, bukan sebaliknya.
+1. PDF technical assignment adalah sumber normatif utama. PRD menerjemahkan
+   isi PDF menjadi requirement ID yang dapat ditelusuri.
+2. Requirement PDF, keputusan implementasi, dan asumsi bisnis harus diberi
+   label terpisah. Asumsi tidak boleh dipresentasikan sebagai instruksi NEXA.
+3. Status implementasi dan bukti pengujian dicatat di `REQUIREMENTS.md` dan
+   `TEST_MATRIX.md`, bukan disimpulkan dari keberadaan fitur atau mock UI.
+4. Perubahan requirement harus memperbarui PRD dan nomor versinya sebelum
+   implementasi.

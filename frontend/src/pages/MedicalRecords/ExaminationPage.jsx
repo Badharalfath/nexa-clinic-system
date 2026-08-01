@@ -157,7 +157,7 @@ export default function ExaminationPage() {
                   </summary>
                   {history.map(h => (
                     <div key={h.id} className="history-item">
-                      <small className="text-muted">{formatDate(h.createdAt)} — Dr. {h.doctor?.name}</small>
+                      <small className="text-muted">{formatDate(h.createdAt)}</small> <small className="text-muted">{h.doctor?.name}</small>
                       <p><strong>S:</strong> {h.subjective}</p>
                       <p><strong>A:</strong> {h.assessment}</p>
                     </div>

@@ -79,7 +79,7 @@ export default function HistoryPage() {
                     <strong>{formatLongDate(r.createdAt)}</strong>
                     <span className="badge badge-green">{r.registration?.polyclinic?.name}</span>
                   </div>
-                  <small>Dr. {r.doctor?.name}</small>
+                  <small>{r.doctor?.name}</small>
                 </div>
 
                 <div className="history-body">

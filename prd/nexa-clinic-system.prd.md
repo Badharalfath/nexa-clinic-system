@@ -1,248 +1,347 @@
 # PRD: Mini Clinic Information System (NEXA)
 
-**Status:** Draft
-**Versi:** 1.0
-**Tanggal:** 2026-07-31
-**Author:** Hermes AI (atas permintaan user)
-**Referensi Utama:** `TECHNICAL ASSIGNMENT PROGRAMMER NEXA.pdf` (Take Home Test)
+**Status:** Source-aligned baseline
 
----
+**Version:** 1.1
 
-## 1. Executive Summary
+**Date:** 2026-08-01
 
-Mini Clinic Information System adalah aplikasi web untuk klinik pratama yang menggantikan proses
-manual (antrean tidak teratur, pencatatan data pasien tersebar, riwayat pemeriksaan sulit dilacak).
-Aplikasi mencakup pengelolaan data pasien, pendaftaran kunjungan, pengelolaan antrean, dan
-pencatatan pemeriksaan dokter dengan metode SOAP. Sistem dibangun dengan React.js (frontend),
-Node.js Express (backend), PostgreSQL (database), dan JWT (autentikasi) sesuai ketentuan technical
-assignment NEXA.
+**Primary source:** `TECHNICAL ASSIGNMENT PROGRAMMER NEXA.pdf`
 
----
+## 1. Source and interpretation rules
 
-## 2. Problem Statement
+This PRD translates the NEXA technical assignment into traceable product
+requirements. The PDF is the normative source.
 
-- **Masalah:** Klinik pratama melakukan sebagian besar proses pelayanan secara manual → antrean
-  tidak teratur, data pasien tersebar, kesulitan melihat riwayat pemeriksaan pasien.
-- **Dampak:** Kualitas pelayanan menurun, administrasi lambat, riwayat medis pasien tidak
-  terintegrasi.
-- **Solusi:** Aplikasi web terintegrasi yang mencakup proses utama pelayanan klinik:
-  pasien → pendaftaran → antrean → pemeriksaan dokter → riwayat.
+- A requirement labelled **PDF requirement** is mandatory because it appears in
+  the assignment.
+- A statement labelled **Project decision** is an implementation choice and is
+  not mandated by the PDF.
+- A statement labelled **Open assumption** must be agreed by the project and
+  documented in the final README before it becomes binding.
+- This PRD does not use implementation status as proof of compliance. Evidence
+  and verification status belong in `REQUIREMENTS.md` and `TEST_MATRIX.md`.
+- If this PRD conflicts with the PDF, the PDF takes precedence.
 
----
+## 2. Assignment context
 
-## 3. Target Users & Personas
+This is a take-home test for the Programmer position with an estimated
+completion time of approximately three working days.
 
-| Persona | Role | Need Utama |
-|---------|------|------------|
-| Administrator | `administrator` | Kontrol penuh: kelola semua data, master data, monitoring |
-| Dokter | `dokter` | Melihat antrean, melakukan pemeriksaan SOAP, input tindakan & resep, melihat riwayat |
-| Petugas Pendaftaran | `petugas_pendaftaran` | Daftarkan pasien, kelola data pasien, kelola antrean |
+The clinic currently performs much of its patient service manually, causing
+irregular queues, scattered patient records, and difficulty reviewing patient
+examination history.
 
-**User Stories:**
-- Sebagai petugas pendaftaran, saya ingin mendaftarkan pasien dan memilih dokter/poli sehingga
-  pasien otomatis mendapat nomor antrean.
-- Sebagai dokter, saya ingin memanggil antrean dan mengisi pemeriksaan SOAP sehingga hasil
-  pemeriksaan tercatat dan pasien ditandai selesai.
-- Sebagai administrator, saya ingin melihat dashboard sehingga mengetahui total pasien dan
-  status antrean hari ini.
+The requested solution is a web-based Mini Clinic Information System that
+integrates the main clinic service processes:
 
----
+1. Patient data management
+2. Visit registration
+3. Queue management
+4. Doctor examination records
 
-## 4. Functional Requirements
+The application does not need to cover every clinic business process. It must
+demonstrate database design, REST API development, user-interface development,
+and working frontend-backend integration.
 
-### MVP (Wajib — dari PDF)
+## 3. Mandatory technology
 
-#### Modul A: Authentication (PDF D.1)
-| ID | Fitur | Deskripsi | Prioritas |
-|----|-------|-----------|-----------|
-| FR-001 | Login | Autentikasi user dengan JWT | P0 |
-| FR-002 | Logout | Menghapus sesi/token | P0 |
-| FR-003 | Role-based Authorization | 3 role: `administrator`, `dokter`, `petugas_pendaftaran`; akses halaman/API dibatasi per role | P0 |
+| Component | PDF requirement |
+|---|---|
+| Frontend | React.js |
+| Backend | Node.js with Express.js |
+| Database | PostgreSQL or MySQL |
+| Authentication | JSON Web Token (JWT) |
+| Version control | Git |
 
-#### Modul B: Master Data Pasien (PDF D.2)
-| ID | Fitur | Deskripsi | Prioritas |
-|----|-------|-----------|-----------|
-| FR-004 | Tambah Pasien | No. Rekam Medis **auto-generate**, NIK, nama, gender, tgl lahir, telepon, alamat | P0 |
-| FR-005 | Ubah Pasien | Update data pasien | P0 |
-| FR-006 | Hapus Pasien | Hapus data pasien | P0 |
-| FR-007 | Detail Pasien | Lihat detail lengkap pasien | P0 |
-| FR-008 | Pencarian Pasien | Search by NIK, nama, no. RM, telepon | P0 |
-| FR-009 | Pagination | Daftar pasien ter-pagination | P0 |
-| FR-010 | Validasi NIK | NIK tidak boleh duplikat (16 digit numerik) | P0 |
+Supporting libraries are allowed as long as they do not replace the mandatory
+primary technologies.
 
-#### Modul C: Pendaftaran Pasien (PDF D.3)
-| ID | Fitur | Deskripsi | Prioritas |
-|----|-------|-----------|-----------|
-| FR-011 | Daftar Kunjungan | Data: pasien, dokter, poli, tanggal kunjungan, jenis pembayaran (umum/bpjs/asuransi), keluhan awal | P0 |
-| FR-012 | Status Kunjungan | Status: `menunggu` → `check_up` → `pemeriksaan` → `selesai` | P0 |
+## 4. Functional requirements
 
-#### Modul D: Antrean (PDF D.4)
-| ID | Fitur | Deskripsi | Prioritas |
-|----|-------|-----------|-----------|
-| FR-013 | Generate Nomor Antrean | Otomatis, format contoh `A001`, `A002`, `A003` (prefix inisial poli + 3 digit) | P0 |
-| FR-014 | Daftar Antrean | Menampilkan daftar antrean lengkap dengan info pasien/dokter/poli | P0 |
-| FR-015 | Panggil Antrean | Memanggil antrean berikutnya (status → dipanggil) | P0 |
-| FR-016 | Ubah Status Antrean | Menunggu / dipanggil / pemeriksaan / selesai / lewat | P0 |
-| FR-017 | Sinkronisasi Status | Status antrean sinkron dengan status registrasi | P1 |
+Every item in this section is a PDF requirement.
 
-#### Modul E: Pemeriksaan Dokter — SOAP (PDF D.5)
-| ID | Fitur | Deskripsi | Prioritas |
-|----|-------|-----------|-----------|
-| FR-018 | Subjective | Keluhan pasien | P0 |
-| FR-019 | Objective | Tekanan darah, suhu tubuh, berat badan, tinggi badan | P0 |
-| FR-020 | Assessment | Diagnosa | P0 |
-| FR-021 | Plan | Rencana terapi | P0 |
-| FR-022 | Input Tindakan Medis | Nama tindakan, deskripsi, biaya | P0 |
-| FR-023 | Input Resep Obat | Nama obat, dosis, quantity, instruksi | P0 |
-| FR-024 | Riwayat Pemeriksaan Pasien | Riwayat lengkap per pasien (SOAP + tindakan + resep) | P0 |
+### 4.1 Authentication
 
-#### Modul F: Dashboard (PDF D.6)
-| ID | Fitur | Deskripsi | Prioritas |
-|----|-------|-----------|-----------|
-| FR-025 | Total Pasien | Jumlah seluruh pasien terdaftar | P0 |
-| FR-026 | Total Pasien Hari Ini | Jumlah registrasi hari ini | P0 |
-| FR-027 | Total Antrean Hari Ini | Jumlah antrean aktif hari ini | P0 |
-| FR-028 | Total Pasien Menunggu | Jumlah antrean status menunggu | P0 |
-| FR-029 | Total Pasien Selesai | Jumlah antrean status selesai | P0 |
+| ID | Requirement | Acceptance statement |
+|---|---|---|
+| FR-001 | Login | A user can log in through JWT authentication. |
+| FR-002 | Logout | An authenticated user can log out. |
+| FR-003 | Role-based authorization | The system supports at least Administrator, Dokter, and Petugas Pendaftaran and restricts access by role. |
 
-### API Endpoints Minimum (PDF E — REST API)
-| ID | Endpoint | Deskripsi |
-|----|----------|-----------|
-| API-001 | `POST /login` | Login JWT |
-| API-002 | `POST /logout` | Logout |
-| API-003 | `GET /patients` | List pasien (search + pagination) |
-| API-004 | `GET /patients/{id}` | Detail pasien |
-| API-005 | `POST /patients` | Tambah pasien |
-| API-006 | `PUT /patients/{id}` | Ubah pasien |
-| API-007 | `DELETE /patients/{id}` | Hapus pasien |
-| API-008 | `GET /registrations` | List pendaftaran |
-| API-009 | `POST /registrations` | Buat pendaftaran (+ auto queue) |
-| API-010 | `PUT /registrations/{id}` | Ubah pendaftaran |
-| API-011 | `GET /queues` | List antrean |
-| API-012 | `POST /queues` | Buat antrean |
-| API-013 | `PUT /queues/{id}/call` | Panggil antrean |
-| API-014 | `PUT /queues/{id}/status` | Ubah status antrean |
-| API-015 | `POST /medical-records` | Buat rekam medis (SOAP + tindakan + resep) |
-| API-016 | `GET /medical-records/{patientId}` | Riwayat rekam medis per pasien |
-| API-017 | `POST /prescriptions` | Buat resep |
-| API-018 | `GET /prescriptions/{id}` | Detail resep |
+The PDF does not define the detailed permission matrix for each role. That
+matrix is an open assumption listed in Section 11.
 
-### Standar Response API (PDF E)
-- **Success:** `{ "success": true, "message": "Success", "data": {...} }`
-- **Error:** `{ "success": false, "message": "Validation Error", "errors": {...} }`
+### 4.2 Master data pasien
 
-### Post-MVP (Nice to Have)
-| ID | Fitur | Deskripsi | Prioritas |
-|----|-------|-----------|-----------|
-| FR-030 | Master Data Poli & Dokter | CRUD poli, CRUD user/dokter via UI admin | P1 |
-| FR-031 | Laporan | Rekap kunjungan per periode | P2 |
-| FR-032 | Cetak Resep / Surat | Print-out resep dan surat keterangan | P2 |
+Patient data must include:
 
----
+- Nomor Rekam Medis, generated automatically
+- NIK
+- Nama Pasien
+- Jenis Kelamin
+- Tanggal Lahir
+- Nomor Telepon
+- Alamat
 
-## 5. Non-Functional Requirements
+| ID | Requirement | Acceptance statement |
+|---|---|---|
+| FR-004 | Tambah Data | An authorized user can create patient data. |
+| FR-005 | Ubah Data | An authorized user can update patient data. |
+| FR-006 | Hapus Data | An authorized user can delete patient data. |
+| FR-007 | Detail Data | An authorized user can view patient details. |
+| FR-008 | Pencarian | An authorized user can search patient data. |
+| FR-009 | Pagination | The patient list supports pagination. |
+| FR-010 | NIK unik | Duplicate NIK values are rejected. |
+| FR-011 | Nomor Rekam Medis otomatis | The system generates the medical record number automatically. |
 
-- **Performance:** Load halaman < 2 detik; API response < 500ms pada data normal.
-- **Security:**
-  - Password di-hash (bcrypt).
-  - JWT dengan expiry; role authorization di backend (bukan hanya UI).
-  - Konfigurasi sensitif (DB, JWT Secret) di `.env`, **tidak boleh hardcode** (PDF G.6).
-- **Reliability:** Error handling konsisten; 404 handler; validasi frontend & backend (PDF F).
-- **Architecture:** Struktur terstruktur & mudah dikembangkan (PDF F) — MVC pattern di backend.
-- **Clean Code:** Naming konsisten, folder terorganisir (controllers, models, routes, validators, utils).
+The PDF does not prescribe NIK length or character format, nor does it define
+which patient fields must be searchable.
 
----
+### 4.3 Pendaftaran pasien
 
-## 6. Tech Stack
+Registration data must include:
 
-| Layer | Teknologi | Alasan |
-|-------|-----------|--------|
-| Frontend | React.js (Vite) | Wajib dari PDF |
-| Backend | Node.js + Express.js | Wajib dari PDF |
-| Database | PostgreSQL (Sequelize ORM) | Wajib dari PDF (opsi PostgreSQL/MySQL) |
-| Authentication | JWT (jsonwebtoken) | Wajib dari PDF |
-| Validation | Joi | Validasi backend yang robust |
-| Version Control | Git (GitHub) | Wajib dari PDF, commit history dinilai |
+- Pasien
+- Dokter
+- Poli
+- Tanggal Kunjungan
+- Jenis Pembayaran
+- Keluhan Awal
 
----
+| ID | Requirement | Acceptance statement |
+|---|---|---|
+| FR-012 | Pendaftaran kunjungan | An authorized user can register a patient visit using all required registration data. |
+| FR-013 | Status kunjungan | A visit supports the statuses Menunggu, Check In, Pemeriksaan, and Selesai. |
 
-## 7. UI/UX Guidelines
+The PDF does not prescribe the allowed values for Jenis Pembayaran.
 
-- **Style:** Dark theme, clean, konsisten antar halaman (PDF H Catatan: rapi, mudah digunakan, konsisten).
-- **Komponen:** Custom CSS (tanpa framework UI), komponen reusable (badge, button, modal, table).
-- **Layout:** Sidebar navigasi + main content; responsive (sidebar collapse di mobile).
-- **Halaman:**
-  - Login (username + password)
-  - Dashboard (5 stat cards)
-  - Data Pasien (tabel + search + pagination + modal form)
-  - Pendaftaran (modal form + patient search + dropdown dokter/poli)
-  - Antrean (kanban board 4 kolom: menunggu → dipanggil → pemeriksaan → selesai)
-  - Pemeriksaan (form SOAP + dynamic list tindakan & resep)
-  - Riwayat (search pasien → history cards)
+### 4.4 Antrean
 
----
+| ID | Requirement | Acceptance statement |
+|---|---|---|
+| FR-014 | Generate nomor antrean | The system generates a queue number automatically. |
+| FR-015 | Daftar antrean | The system displays the patient queue list. |
+| FR-016 | Panggil antrean berikutnya | An authorized user can call the next queue. |
+| FR-017 | Ubah status antrean | An authorized user can change a queue status. |
 
-## 8. Architecture & Data Flow
+The PDF gives `A001`, `A002`, and `A003` as examples. It does not require a
+polyclinic initial, define reset timing, or prescribe the complete queue-status
+set.
 
-```mermaid
-flowchart LR
-  User -->|Login JWT| Frontend[React.js]
-  Frontend -->|REST API| Backend[Node.js Express]
-  Backend -->|Sequelize| DB[(PostgreSQL)]
-  Backend -->|JWT verify| Auth[(Role: admin/dokter/petugas)]
+### 4.5 Pemeriksaan dokter
+
+The examination must use SOAP:
+
+| ID | SOAP section | Required data |
+|---|---|---|
+| FR-018 | Subjective | Keluhan Pasien |
+| FR-019 | Objective | Tekanan Darah, Suhu Tubuh, Berat Badan, and Tinggi Badan |
+| FR-020 | Assessment | Diagnosa |
+| FR-021 | Plan | Rencana Terapi |
+
+Additional required examination features:
+
+| ID | Requirement | Acceptance statement |
+|---|---|---|
+| FR-022 | Input Tindakan Medis | A doctor can record medical actions. |
+| FR-023 | Input Resep Obat | A doctor can record a prescription. |
+| FR-024 | Riwayat Pemeriksaan Pasien | An authorized user can review a patient's examination history. |
+
+The PDF does not prescribe the detailed fields for medical actions or
+prescriptions.
+
+### 4.6 Dashboard
+
+The dashboard must be simple and display:
+
+| ID | Required indicator |
+|---|---|
+| FR-025 | Total Pasien |
+| FR-026 | Total Pasien Hari Ini |
+| FR-027 | Total Antrean Hari Ini |
+| FR-028 | Total Pasien Menunggu |
+| FR-029 | Total Pasien Selesai Dilayani |
+
+The PDF does not define whether "Total Pasien Hari Ini" means newly created
+patient records or patient visits today. This is an open assumption.
+
+## 5. Minimum REST API
+
+The backend must provide at least these endpoint paths as listed in the PDF.
+
+| ID | Method and path |
+|---|---|
+| API-001 | `POST /login` |
+| API-002 | `POST /logout` |
+| API-003 | `GET /patients` |
+| API-004 | `GET /patients/{id}` |
+| API-005 | `POST /patients` |
+| API-006 | `PUT /patients/{id}` |
+| API-007 | `DELETE /patients/{id}` |
+| API-008 | `GET /registrations` |
+| API-009 | `POST /registrations` |
+| API-010 | `PUT /registrations/{id}` |
+| API-011 | `GET /queues` |
+| API-012 | `POST /queues` |
+| API-013 | `PUT /queues/{id}/call` |
+| API-014 | `PUT /queues/{id}/status` |
+| API-015 | `POST /medical-records` |
+| API-016 | `GET /medical-records/{patientId}` |
+| API-017 | `POST /prescriptions` |
+| API-018 | `GET /prescriptions/{id}` |
+
+### 5.1 Response format
+
+All endpoints are expected to use a consistent response format.
+
+Success:
+
+```json
+{
+  "success": true,
+  "message": "Success",
+  "data": {}
+}
 ```
 
-**Alur bisnis:**
-1. Petugas mendaftarkan pasien (pilih pasien, dokter, poli, pembayaran, keluhan)
-2. Sistem auto-generate nomor antrean (prefix inisial poli + nomor urut, mis. `U001`, `G001`)
-3. Antrean muncul di board; petugas panggil → dokter mulai pemeriksaan
-4. Dokter mengisi SOAP + tindakan medis + resep → simpan
-5. Status otomatis menjadi `selesai`; riwayat tersimpan di rekam medis pasien
+Error:
 
----
+```json
+{
+  "success": false,
+  "message": "Validation Error",
+  "errors": {}
+}
+```
 
-## 9. Milestones
+## 6. Engineering requirements
 
-| Fase | Target | Deliverable |
-|------|--------|-------------|
-| M1 - Setup & DB | ✅ Selesai | Repo, scaffolding, ERD, schema.sql, models |
-| M2 - Backend API | ✅ Selesai | Semua endpoint (auth, patients, registrations, queues, medical-records, dashboard) |
-| M3 - Frontend Demo | ✅ Selesai (menunggu approval final) | Semua halaman dengan mock data, flow sesuai PDF |
-| M4 - Integrasi | TBD | Frontend connect ke backend real (PostgreSQL) |
-| M5 - Finalisasi | TBD | README, Postman Collection, .env.example, video demo, push final |
+Every item below comes from Section F or G of the PDF:
 
----
+- Use an application architecture that is structured and easy to extend.
+- Implement the REST API well.
+- Use appropriate database relationships.
+- Validate data on both the frontend and backend.
+- Handle errors well.
+- Use Git throughout development.
+- Do not hard-code database credentials, JWT secrets, or other sensitive
+  configuration in source code or the repository.
+- Include `.env.example`.
 
-## 10. Success Metrics
+The PDF does not mandate MVC, Sequelize, Joi, bcrypt, a JWT expiration period,
+specific performance thresholds, or a particular test framework.
 
-- **Fungsional:** 100% FR P0 (FR-001 s.d. FR-029) berfungsi sesuai PDF.
-- **API:** Semua 18 endpoint minimum berjalan dengan standar response konsisten.
-- **Teknis:** Commit history menunjukkan proses pengembangan bertahap (PDF G.8 — hindari 1 commit akhir).
-- **Deliverables:** 9 item deliverables PDF (G) lengkap: source code FE, source code BE, file .sql, ERD, Postman Collection, README, .env.example, repo GitHub, video demo ≤ 10 menit.
+## 7. UI/UX requirement
 
----
+The PDF does not prescribe a specific application, theme, component library,
+layout, or responsive breakpoint. It requires the interface to be:
 
-## 11. Traceability Matrix (Mapping ke PDF)
+- Neat
+- Easy to use
+- Consistent
 
-| PDF Section | Requirement | Status Implementasi |
-|-------------|-------------|---------------------|
-| A. Informasi Umum | Posisi Programmer, estimasi 3 hari | ✅ |
-| C. Teknologi | React, Express, PostgreSQL/MySQL, JWT, Git | ✅ |
-| D.1 Authentication | Login, Logout, Role Authorization | ✅ FR-001..003 |
-| D.2 Master Data Pasien | Auto RM#, CRUD, search, pagination, NIK unik | ✅ FR-004..010 |
-| D.3 Pendaftaran | Pasien, dokter, poli, tgl, pembayaran, keluhan, status | ✅ FR-011..012 |
-| D.4 Antrean | Auto nomor, list, panggil, ubah status | ✅ FR-013..017 |
-| D.5 Pemeriksaan SOAP | S/O/A/P, tindakan medis, resep, riwayat | ✅ FR-018..024 |
-| D.6 Dashboard | 5 total indikator | ✅ FR-025..029 |
-| E. REST API | 18 endpoint minimum + standar response | ✅ |
-| F. Ketentuan | Arsitektur terstruktur, validasi FE+BE, error handling, Git | ✅ |
-| G. Deliverables | 9 item (README, .env.example, Postman, video, dsb.) | ⏳ M5 |
-| H. Kriteria Penilaian | 8 aspek dengan bobot (total 100%) | ⏳ Review final |
+## 8. Required deliverables
 
----
+| No. | Deliverable |
+|---|---|
+| 1 | Frontend source code using React.js |
+| 2 | Backend source code using Node.js |
+| 3 | Database `.sql` file |
+| 4 | Entity Relationship Diagram (ERD) |
+| 5 | Postman Collection |
+| 6 | `README.md` |
+| 7 | `.env.example` |
+| 8 | GitHub or GitLab repository with development commit history |
+| 9 | Application demonstration video with a maximum duration of 10 minutes |
 
-## Log
+The README must contain:
 
-| Tanggal | Perubahan | Oleh |
-|---------|-----------|------|
-| 2026-07-31 | Dokumen awal (berdasarkan PDF + hasil review flow frontend) | Hermes AI |
+- Application installation instructions
+- Application run instructions
+- Project structure
+- Login accounts
+- `.env` configuration
+- Database migration instructions, if migrations are used
+- Any business-process assumptions or simplifications
+
+The repository must show the development process through commit history and
+should not contain only one final commit.
+
+## 9. Evaluation criteria
+
+| Evaluation aspect | Weight |
+|---|---:|
+| Database Design (ERD and Database Relations) | 15% |
+| REST API and Backend Implementation | 20% |
+| Frontend Implementation (React.js) | 20% |
+| Authentication and Authorization | 10% |
+| Clean Code and Project Structure | 10% |
+| Data Validation and Error Handling | 10% |
+| Documentation (README, Postman, ERD) | 10% |
+| Git Commit History | 5% |
+| **Total** | **100%** |
+
+The assignment is expected to be completed independently. Supporting libraries
+are allowed if the required primary technologies remain unchanged.
+
+## 10. Project decisions, not PDF requirements
+
+The current repository has selected the following implementation and design
+choices. They must not be presented as NEXA-mandated requirements:
+
+- PostgreSQL rather than MySQL
+- Sequelize ORM
+- Joi validation
+- bcrypt-compatible password hashing
+- MVC-style backend folders
+- React with Vite
+- A light medical theme, sidebar navigation, modal forms, and a queue board
+- Mock data for the frontend user-flow prototype before real integration
+
+These choices may be retained as long as they comply with the PDF.
+
+## 11. Open assumptions requiring an explicit project decision
+
+| ID | Topic not specified by the PDF |
+|---|---|
+| AS-001 | Exact role-permission matrix beyond the three minimum roles |
+| AS-002 | Searchable patient fields |
+| AS-003 | NIK length and character format beyond uniqueness |
+| AS-004 | Allowed Jenis Pembayaran values |
+| AS-005 | Queue-number prefix, sequence scope, and reset timing |
+| AS-006 | Queue-status values and transitions |
+| AS-007 | Whether queue and registration status changes synchronize automatically |
+| AS-008 | Detailed fields for medical actions and prescriptions |
+| AS-009 | Meaning and date boundaries of dashboard totals |
+
+Accepted assumptions or business-process simplifications must be documented in
+the final README, as permitted by the PDF.
+
+## 12. Source coverage matrix
+
+This table records PRD coverage of the source. It is not an implementation
+completion report.
+
+| PDF section | PRD coverage |
+|---|---|
+| A. Informasi Umum | Assignment context and delivery constraint recorded |
+| B. Studi Kasus | Section 2 |
+| C. Teknologi yang Digunakan | Section 3 |
+| D.1 Authentication | FR-001 through FR-003 |
+| D.2 Master Data Pasien | FR-004 through FR-011 |
+| D.3 Modul Pendaftaran Pasien | FR-012 and FR-013 |
+| D.4 Modul Antrean | FR-014 through FR-017 |
+| D.5 Modul Pemeriksaan Dokter | FR-018 through FR-024 |
+| D.6 Dashboard | FR-025 through FR-029 |
+| E. REST API Minimum | API-001 through API-018 and Section 5.1 |
+| F. Ketentuan Pengerjaan | Section 6 |
+| G. Deliverables | Section 8 |
+| H. Kriteria Penilaian and Catatan | Sections 7, 9, and 11 |
+
+## Change log
+
+| Date | Version | Change |
+|---|---|---|
+| 2026-07-31 | 1.0 | Initial PRD based on the assignment and frontend review. |
+| 2026-08-01 | 1.1 | Corrected the PRD to separate exact PDF requirements from project decisions and open assumptions. |

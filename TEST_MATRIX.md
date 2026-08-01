@@ -5,7 +5,7 @@ Status values: `Missing`, `Planned`, `In progress`, `Passing`, `Failing`,
 
 | Requirement ID | Implementation evidence | Automated test / command | UI route + viewport / manual evidence | Status |
 |---|---|---|---|---|
-| PLAN-REQ-001 | Not audited | Matrix coverage audit | N/A | Missing |
+| PLAN-REQ-001 | PRD 1.1 source coverage matrix; full implementation inventory pending | PDF-to-PRD section and list comparison | N/A | In progress |
 
 ## Latest full verification
 
@@ -13,4 +13,5 @@ Status values: `Missing`, `Planned`, `In progress`, `Passing`, `Failing`,
 
 ## Known evidence gaps
 
-- The requirement inventory has not been completed.
+- PDF-to-PRD source coverage is complete.
+- The implementation inventory and open-assumption decisions are not complete.
