@@ -39,11 +39,11 @@
 
 ## Phase 9: PRD & Docs
 - [x] PRD folder (prd/nexa-clinic-system.prd.md) — acuan PDF
+- [x] Frontend ↔ Backend integration (USE_MOCK off, verified live)
+- [x] Postman Collection (23 requests, 7 folders) + environment
 - [ ] README.md final
-- [ ] Postman Collection
 - [ ] Video Demo
 - [ ] .env.example final check
-- [ ] Frontend ↔ Backend integration (switch USE_MOCK off)
 - [ ] Final push
 
 ## Backend Milestones (git history)

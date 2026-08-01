@@ -1,0 +1,369 @@
+{
+  "info": {
+    "_postman_id": "nexa-clinic-system-2026",
+    "name": "NEXA Clinic System API",
+    "description": "Technical assignment: Mini Clinic Information System. React.js + Node.js/Express + PostgreSQL + JWT. Base URL: {{baseUrl}}. Login first (Auth > Login) to auto-set the token variable.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "token", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has token', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.eql(true);",
+                  "  pm.expect(body.data.token).to.be.a('string');",
+                  "  pm.collectionVariables.set('token', body.data.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/auth/logout", "host": ["{{baseUrl}}"], "path": ["auth", "logout"] }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Role present', () => pm.expect(pm.response.json().data.role).to.be.a('string'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Patients",
+      "item": [
+        {
+          "name": "List Patients (search + pagination)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/patients?search=&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients"],
+              "query": [
+                { "key": "search", "value": "", "description": "Filter by name/NIK/RM" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Patient by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/patients/{{patientId}}", "host": ["{{baseUrl}}"], "path": ["patients", "{{patientId}}"] }
+          }
+        },
+        {
+          "name": "Create Patient",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Auto RM generated', () => {",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d.medicalRecordNumber).to.match(/^RM-\\d{6}-\\d{4}$/);",
+                  "  pm.collectionVariables.set('patientId', d.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nik\": \"3201234567890101\",\n  \"name\": \"Budi Santoso\",\n  \"gender\": \"L\",\n  \"birthDate\": \"1990-01-15\",\n  \"phone\": \"081234567890\",\n  \"address\": \"Jl. Melati No. 10, Jakarta\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/patients", "host": ["{{baseUrl}}"], "path": ["patients"] }
+          }
+        },
+        {
+          "name": "Update Patient",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nik\": \"3201234567890101\",\n  \"name\": \"Budi Santoso Updated\",\n  \"gender\": \"L\",\n  \"birthDate\": \"1990-01-15\",\n  \"phone\": \"081298765432\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/patients/{{patientId}}", "host": ["{{baseUrl}}"], "path": ["patients", "{{patientId}}"] }
+          }
+        },
+        {
+          "name": "Delete Patient",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/patients/{{patientId}}", "host": ["{{baseUrl}}"], "path": ["patients", "{{patientId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Registrations",
+      "item": [
+        {
+          "name": "List Registrations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/registrations?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["registrations"],
+              "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }]
+            }
+          }
+        },
+        {
+          "name": "Create Registration (auto queue)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Queue number created', () => {",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d.queue.queueNumber).to.match(/^[A-Z]\\d{3}$/);",
+                  "  pm.collectionVariables.set('registrationId', d.id);",
+                  "  pm.collectionVariables.set('queueId', d.queue.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patientId\": \"{{patientId}}\",\n  \"doctorId\": \"a0000000-0000-0000-0000-000000000002\",\n  \"polyclinicId\": \"b0000000-0000-0000-0000-000000000001\",\n  \"paymentType\": \"umum\",\n  \"complaint\": \"Demam dan batuk sejak 2 hari\",\n  \"registrationDate\": \"2026-08-01\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/registrations", "host": ["{{baseUrl}}"], "path": ["registrations"] }
+          }
+        },
+        {
+          "name": "Update Registration",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"check_in\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/registrations/{{registrationId}}", "host": ["{{baseUrl}}"], "path": ["registrations", "{{registrationId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Queues",
+      "item": [
+        {
+          "name": "List Queues (filter by status)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/queues?status=menunggu",
+              "host": ["{{baseUrl}}"],
+              "path": ["queues"],
+              "query": [{ "key": "status", "value": "menunggu", "description": "menunggu|dipanggil|pemeriksaan|selesai|lewat" }]
+            }
+          }
+        },
+        {
+          "name": "Call Queue (panggil)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/queues/{{queueId}}/call", "host": ["{{baseUrl}}"], "path": ["queues", "{{queueId}}", "call"] }
+          }
+        },
+        {
+          "name": "Update Queue Status",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"pemeriksaan\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/queues/{{queueId}}/status", "host": ["{{baseUrl}}"], "path": ["queues", "{{queueId}}", "status"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Medical Records (SOAP)",
+      "item": [
+        {
+          "name": "Create Medical Record",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Actions and prescriptions saved', () => {",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d.medicalActions.length).to.be.above(0);",
+                  "  pm.expect(d.prescriptions.length).to.be.above(0);",
+                  "  pm.collectionVariables.set('medicalRecordId', d.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registrationId\": \"{{registrationId}}\",\n  \"patientId\": \"{{patientId}}\",\n  \"doctorId\": \"a0000000-0000-0000-0000-000000000002\",\n  \"subjective\": \"Demam 38C sejak 2 hari, batuk berdahak\",\n  \"objectiveBloodPressure\": \"120/80\",\n  \"objectiveTemperature\": 38.0,\n  \"objectiveWeight\": 70,\n  \"objectiveHeight\": 172,\n  \"assessment\": \"ISPA akut\",\n  \"plan\": \"Paracetamol 3x1, istirahat, kontrol 3 hari\",\n  \"medicalActions\": [\n    { \"actionName\": \"Konsultasi\", \"actionDescription\": \"Konsultasi dokter\", \"cost\": 35000 }\n  ],\n  \"prescriptions\": [\n    { \"drugName\": \"Paracetamol 500mg\", \"dosage\": \"3x1\", \"quantity\": 10, \"instructions\": \"Sesudah makan\" }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/medical-records", "host": ["{{baseUrl}}"], "path": ["medical-records"] }
+          }
+        },
+        {
+          "name": "Get Medical Record by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/medical-records/{{medicalRecordId}}", "host": ["{{baseUrl}}"], "path": ["medical-records", "{{medicalRecordId}}"] }
+          }
+        },
+        {
+          "name": "Get Patient History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/medical-records/patient/{{patientId}}", "host": ["{{baseUrl}}"], "path": ["medical-records", "patient", "{{patientId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Prescriptions",
+      "item": [
+        {
+          "name": "Create Prescription",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"medicalRecordId\": \"{{medicalRecordId}}\",\n  \"drugName\": \"Amoxicillin 500mg\",\n  \"dosage\": \"3x1\",\n  \"quantity\": 15,\n  \"instructions\": \"Sesudah makan\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/prescriptions", "host": ["{{baseUrl}}"], "path": ["prescriptions"] }
+          }
+        },
+        {
+          "name": "Get Prescription by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/prescriptions/{{prescriptionId}}", "host": ["{{baseUrl}}"], "path": ["prescriptions", "{{prescriptionId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard & Referensi",
+      "item": [
+        {
+          "name": "Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/dashboard", "host": ["{{baseUrl}}"], "path": ["dashboard"] }
+          }
+        },
+        {
+          "name": "Referensi Doctors",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/referensi/doctors", "host": ["{{baseUrl}}"], "path": ["referensi", "doctors"] }
+          }
+        },
+        {
+          "name": "Referensi Polyclinics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/referensi/polyclinics", "host": ["{{baseUrl}}"], "path": ["referensi", "polyclinics"] }
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:5000/api/health", "host": ["http://localhost:5000"], "path": ["api", "health"] }
+          }
+        }
+      ]
+    }
+  ]
+}
