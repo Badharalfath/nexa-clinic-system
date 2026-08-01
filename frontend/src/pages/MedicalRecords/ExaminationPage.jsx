@@ -60,6 +60,26 @@ export default function ExaminationPage() {
     setPrescriptions([]);
   };
 
+  const applyHistory = (h) => {
+    setForm((prev) => ({
+      ...prev,
+      subjective: h.subjective || prev.subjective,
+      objectiveBloodPressure: h.objectiveBloodPressure || '',
+      objectiveTemperature: h.objectiveTemperature != null ? String(h.objectiveTemperature) : '',
+      objectiveWeight: h.objectiveWeight != null ? String(h.objectiveWeight) : '',
+      objectiveHeight: h.objectiveHeight != null ? String(h.objectiveHeight) : '',
+      assessment: h.assessment || '',
+      plan: h.plan || '',
+    }));
+    setActions((h.medicalActions || []).map((a) => ({
+      actionName: a.actionName, actionDescription: a.actionDescription || '', cost: a.cost != null ? String(a.cost) : '0',
+    })));
+    setPrescriptions((h.prescriptions || []).map((p) => ({
+      drugName: p.drugName, dosage: p.dosage || '', quantity: p.quantity || 1, instructions: p.instructions || '',
+    })));
+    setSuccess('Form pemeriksaan terisi dari riwayat terpilih. Sesuaikan bila perlu.');
+  };
+
   const addAction = () => setActions([...actions, { actionName: '', actionDescription: '', cost: 0 }]);
   const updateAction = (i, field, value) => {
     const a = [...actions];
@@ -151,13 +171,18 @@ export default function ExaminationPage() {
               )}
 
               {history.length > 0 && (
-                <details className="history-accordion">
+                <details className="history-accordion" open>
                   <summary>
                     <Icon name="fileText" size={14} /> Riwayat Pemeriksaan ({history.length}x)
+                    <span className="history-hint">klik riwayat untuk mengisi form</span>
                   </summary>
-                  {history.map(h => (
-                    <div key={h.id} className="history-item">
-                      <small className="text-muted">{formatDate(h.createdAt)}</small> <small className="text-muted">{h.doctor?.name}</small>
+                  {history.map((h) => (
+                    <div key={h.id} className="history-item" onClick={() => applyHistory(h)} role="button" tabIndex={0}>
+                      <div className="history-item-head">
+                        <small className="text-muted">{formatDate(h.createdAt)}</small>
+                        <small className="text-muted">{h.doctor?.name}</small>
+                        <span className="history-use"><Icon name="clipboard" size={12} /> Gunakan</span>
+                      </div>
                       <p><strong>S:</strong> {h.subjective}</p>
                       <p><strong>A:</strong> {h.assessment}</p>
                     </div>

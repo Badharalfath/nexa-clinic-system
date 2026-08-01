@@ -530,8 +530,13 @@ input[type="date"] { min-height: 44px; }
   padding: 14px 17px; margin-bottom: 16px; cursor: pointer; box-shadow: var(--shadow-sm);
 }
 .history-accordion summary { font-size: 13px; font-weight: 700; cursor: pointer; color: var(--ink); display: flex; align-items: center; gap: 7px; }
-.history-item { margin-top: 9px; padding: 9px 0; border-top: 1px solid var(--border); font-size: 12.5px; }
+.history-item { margin-top: 9px; padding: 9px 11px; border-top: 1px solid var(--border); font-size: 12.5px; cursor: pointer; border-radius: 8px; transition: background 0.15s ease; }
+.history-item:hover { background: var(--surface-muted); }
+.history-item:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
 .history-item p { margin: 2px 0; }
+.history-hint { font-weight: 500; color: var(--primary); font-size: 11.5px; margin-left: auto; }
+.history-item-head { display: flex; align-items: center; gap: 8px; }
+.history-use { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; color: var(--primary); font-weight: 700; font-size: 11.5px; }
 .history-card {
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
   margin-bottom: 14px; overflow: hidden; box-shadow: var(--shadow-sm);
