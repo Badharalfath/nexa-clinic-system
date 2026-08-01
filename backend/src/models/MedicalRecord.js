@@ -7,6 +7,25 @@ const MedicalRecord = sequelize.define('medical_records', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
+  registrationId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    unique: true,
+    field: 'registration_id',
+    references: { model: 'registrations', key: 'id' }
+  },
+  patientId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'patient_id',
+    references: { model: 'patients', key: 'id' }
+  },
+  doctorId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'doctor_id',
+    references: { model: 'users', key: 'id' }
+  },
   // SOAP: Subjective
   subjective: {
     type: DataTypes.TEXT,

@@ -42,6 +42,10 @@ const callQueue = async (req, res) => {
     if (!queue) return ApiResponse.notFound(res, 'Queue not found');
 
     await queue.update({ status: 'dipanggil', calledAt: new Date() });
+
+    // Sync registration status to check_in (PDF: Check)
+    await Registration.update({ status: 'check_in' }, { where: { id: queue.registrationId } });
+
     return ApiResponse.success(res, queue, 'Queue called successfully');
   } catch (error) {
     console.error('Call queue error:', error);

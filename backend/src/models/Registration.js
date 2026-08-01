@@ -7,6 +7,24 @@ const Registration = sequelize.define('registrations', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
+  patientId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'patient_id',
+    references: { model: 'patients', key: 'id' }
+  },
+  doctorId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'doctor_id',
+    references: { model: 'users', key: 'id' }
+  },
+  polyclinicId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'polyclinic_id',
+    references: { model: 'polyclinics', key: 'id' }
+  },
   registrationDate: {
     type: DataTypes.DATEONLY,
     allowNull: false,

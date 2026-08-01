@@ -7,6 +7,12 @@ const MedicalAction = sequelize.define('medical_actions', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
+  medicalRecordId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'medical_record_id',
+    references: { model: 'medical_records', key: 'id' }
+  },
   actionName: {
     type: DataTypes.STRING(200),
     allowNull: false,
