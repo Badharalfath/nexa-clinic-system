@@ -30,6 +30,9 @@ const registrationSchema = Joi.object({
 });
 
 const medicalRecordSchema = Joi.object({
+  registrationId: Joi.string().uuid().required().messages({ 'any.required': 'Registration is required' }),
+  patientId: Joi.string().uuid().required().messages({ 'any.required': 'Patient is required' }),
+  doctorId: Joi.string().uuid().required().messages({ 'any.required': 'Doctor is required' }),
   subjective: Joi.string().allow('', null),
   objectiveBloodPressure: Joi.string().max(20).allow('', null),
   objectiveTemperature: Joi.number().min(30).max(45).allow(null),
