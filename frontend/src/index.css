@@ -512,15 +512,37 @@ input[type="date"] { min-height: 44px; }
 }
 .soap-form h3 { font-size: 14.5px; margin-bottom: 20px; font-weight: 800; }
 .soap-section { margin-bottom: 24px; }
-.soap-label {
-  font-size: 12.5px; font-weight: 700; display: flex; align-items: center; gap: 6px;
-  margin-bottom: 10px; padding-left: 10px; border-left: 3.5px solid var(--border-strong); color: var(--ink-2);
+/* Section header: colored letter badge + name + description */
+.soap-section-head { display: flex; align-items: center; gap: 11px; margin-bottom: 10px; }
+.soap-letter {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 10px;
+  font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0;
 }
-.soap-label .hint { font-weight: 500; color: var(--ink-4); font-size: 11px; }
-.soap-s { border-left-color: var(--accent); color: var(--accent); }
-.soap-o { border-left-color: var(--success); color: var(--success); }
-.soap-a { border-left-color: var(--warning); color: var(--warning); }
-.soap-p { border-left-color: var(--danger); color: var(--danger); }
+.soap-letter.soap-s { background: var(--accent); }
+.soap-letter.soap-o { background: var(--success); }
+.soap-letter.soap-a { background: var(--warning); }
+.soap-letter.soap-p { background: var(--danger); }
+.soap-letter.soap-t { background: var(--ink-3); }
+.soap-letter.soap-r { background: var(--primary); font-size: 11px; letter-spacing: -0.02em; }
+.soap-section-title { display: flex; flex-direction: column; line-height: 1.25; }
+.soap-name { font-size: 13.5px; font-weight: 800; color: var(--ink); }
+.soap-desc { font-size: 11.5px; font-weight: 500; color: var(--ink-3); }
+/* Textareas use the same field styling as other inputs */
+.soap-form textarea {
+  width: 100%; padding: 11px 14px; background: var(--surface);
+  border: 1.5px solid var(--border-strong); border-radius: var(--radius-xs);
+  color: var(--ink); font-size: 14px; font-family: var(--font-body);
+  resize: vertical; min-height: 64px; line-height: 1.55;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.soap-form textarea::placeholder { color: var(--ink-4); }
+.soap-form textarea:hover:not(:focus) { border-color: var(--ink-4); }
+.soap-form textarea:focus {
+  outline: none; border-color: var(--primary);
+  box-shadow: 0 0 0 3.5px rgba(14, 147, 132, 0.13);
+  background: var(--primary-mist);
+}
 .action-row { align-items: flex-end; margin-bottom: 9px; }
 .action-row .icon-btn { height: 44px; }
 
