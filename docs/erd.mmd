@@ -1,0 +1,87 @@
+erDiagram
+    USERS ||--o{ REGISTRATIONS : "dokter menangani"
+    USERS ||--o{ MEDICAL_RECORDS : "dokter memeriksa"
+    PATIENTS ||--o{ REGISTRATIONS : "mendaftar"
+    PATIENTS ||--o{ MEDICAL_RECORDS : "memiliki riwayat"
+    POLYCLINICS ||--o{ REGISTRATIONS : "poli tujuan"
+    REGISTRATIONS ||--|| QUEUES : "menghasilkan antrean"
+    REGISTRATIONS ||--|| MEDICAL_RECORDS : "pemeriksaan SOAP"
+    MEDICAL_RECORDS ||--o{ MEDICAL_ACTIONS : "memiliki tindakan"
+    MEDICAL_RECORDS ||--o{ PRESCRIPTIONS : "memiliki resep"
+
+    USERS {
+        uuid id PK
+        varchar username UK "login"
+        varchar email UK
+        varchar password "hashed"
+        varchar name
+        enum role "administrator | dokter | petugas_pendaftaran"
+        boolean is_active
+    }
+
+    PATIENTS {
+        uuid id PK
+        varchar medical_record_number UK "RM-YYYYMM-XXXX"
+        varchar nik UK "16 digit"
+        varchar name
+        enum gender "L | P"
+        date birth_date
+        varchar phone
+        text address
+    }
+
+    POLYCLINICS {
+        uuid id PK
+        varchar name UK
+        text description
+    }
+
+    REGISTRATIONS {
+        uuid id PK
+        uuid patient_id FK
+        uuid doctor_id FK
+        uuid polyclinic_id FK
+        date registration_date
+        enum payment_type "umum | bpjs | asuransi"
+        text complaint
+        enum status "menunggu | check_in | pemeriksaan | selesai"
+    }
+
+    QUEUES {
+        uuid id PK
+        uuid registration_id FK,UK
+        varchar queue_number "U001 / G001"
+        enum status "menunggu | dipanggil | pemeriksaan | selesai | lewat"
+        timestamp called_at
+    }
+
+    MEDICAL_RECORDS {
+        uuid id PK
+        uuid registration_id FK,UK
+        uuid patient_id FK
+        uuid doctor_id FK
+        text subjective "S"
+        varchar objective_blood_pressure "O"
+        decimal objective_temperature
+        decimal objective_weight
+        decimal objective_height
+        text assessment "A"
+        text plan "P"
+    }
+
+    MEDICAL_ACTIONS {
+        uuid id PK
+        uuid medical_record_id FK
+        varchar action_name
+        text action_description
+        decimal cost
+    }
+
+    PRESCRIPTIONS {
+        uuid id PK
+        uuid medical_record_id FK
+        varchar drug_name
+        varchar dosage
+        integer quantity
+        text instructions
+    }
