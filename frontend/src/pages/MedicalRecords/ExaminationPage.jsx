@@ -12,6 +12,23 @@ const emptyForm = {
   assessment: '', plan: '',
 };
 
+const initials = (name) =>
+  (name || '?')
+    .split(' ')
+    .map((w) => w[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
+const statusTone = {
+  menunggu: 'slate',
+  dipanggil: 'sky',
+  pemeriksaan: 'amber',
+  selesai: 'emerald',
+  lewat: 'red',
+};
+
 export default function ExaminationPage() {
   const { user } = useAuth();
   const [queues, setQueues] = useState([]);
@@ -157,16 +174,32 @@ export default function ExaminationPage() {
           ) : (
             <>
               {patient && (
-                <div className="patient-summary">
-                  <div className="patient-summary-row">
-                    <div>
-                      <h3>{patient.name} <small>({patient.medicalRecordNumber})</small></h3>
-                      <p>NIK {patient.nik} · {patient.gender === 'L' ? 'Laki-laki' : 'Perempuan'} · Lahir {formatDate(patient.birthDate)}</p>
+                <div className="patient-head">
+                  <div className="patient-head-left">
+                    <div className="patient-head-avatar" aria-hidden="true">
+                      {initials(patient.name)}
                     </div>
-                    <span className={`badge ${statusBadgeClass(selectedQueue.status)}`}>
-                      {statusLabel(selectedQueue.status)}
-                    </span>
+                    <div className="patient-head-info">
+                      <h2 className="patient-head-name">
+                        {patient.name}
+                        <span style={{ fontWeight: 500, color: 'var(--ink-3)', fontSize: 13, marginLeft: 8 }}>
+                          ({patient.gender === 'L' ? 'Laki-laki' : 'Perempuan'})
+                        </span>
+                      </h2>
+                      <div className="patient-head-meta">
+                        <span className="rm">
+                          <Icon name="fileText" size={13} /> {patient.medicalRecordNumber}
+                        </span>
+                        <span>|</span>
+                        <span>
+                          <Icon name="calendar" size={13} /> Lahir {formatDate(patient.birthDate)}
+                        </span>
+                      </div>
+                    </div>
                   </div>
+                  <span className={`badge-dot badge-${statusTone[selectedQueue.status] || 'slate'}`}>
+                    {statusLabel(selectedQueue.status)}
+                  </span>
                 </div>
               )}
 
@@ -218,27 +251,37 @@ export default function ExaminationPage() {
                       <span className="soap-desc">Hasil pemeriksaan fisik</span>
                     </div>
                   </div>
-                  <div className="form-row">
+                  <div className="vitals-grid">
                     <div className="form-group">
                       <label htmlFor="td">Tekanan Darah</label>
-                      <input id="td" placeholder="120/80" value={form.objectiveBloodPressure} onChange={(e) => setForm({ ...form, objectiveBloodPressure: e.target.value })} />
+                      <div className="input-group">
+                        <input id="td" placeholder="120/80" value={form.objectiveBloodPressure} onChange={(e) => setForm({ ...form, objectiveBloodPressure: e.target.value })} />
+                        <span className="input-group-suffix">mmHg</span>
+                      </div>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="suhu">Suhu Tubuh (°C)</label>
-                      <input id="suhu" type="number" step="0.1" placeholder="36.5" value={form.objectiveTemperature} onChange={(e) => setForm({ ...form, objectiveTemperature: e.target.value })} />
+                      <label htmlFor="suhu">Suhu Tubuh</label>
+                      <div className="input-group">
+                        <input id="suhu" type="number" step="0.1" placeholder="36.5" value={form.objectiveTemperature} onChange={(e) => setForm({ ...form, objectiveTemperature: e.target.value })} />
+                        <span className="input-group-suffix">°C</span>
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="bb">Berat Badan</label>
+                      <div className="input-group">
+                        <input id="bb" type="number" step="0.1" placeholder="65" value={form.objectiveWeight} onChange={(e) => setForm({ ...form, objectiveWeight: e.target.value })} />
+                        <span className="input-group-suffix">kg</span>
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="tb">Tinggi Badan</label>
+                      <div className="input-group">
+                        <input id="tb" type="number" step="0.1" placeholder="170" value={form.objectiveHeight} onChange={(e) => setForm({ ...form, objectiveHeight: e.target.value })} />
+                        <span className="input-group-suffix">cm</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label htmlFor="bb">Berat Badan (kg)</label>
-                      <input id="bb" type="number" step="0.1" placeholder="65" value={form.objectiveWeight} onChange={(e) => setForm({ ...form, objectiveWeight: e.target.value })} />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="tb">Tinggi Badan (cm)</label>
-                      <input id="tb" type="number" step="0.1" placeholder="170" value={form.objectiveHeight} onChange={(e) => setForm({ ...form, objectiveHeight: e.target.value })} />
-                    </div>
                   </div>
-                </div>
 
                 {/* A - Assessment */}
                 <div className="soap-section">

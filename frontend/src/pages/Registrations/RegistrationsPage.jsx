@@ -89,9 +89,12 @@ export default function RegistrationsPage() {
   return (
     <div>
       <div className="page-header">
-        <h2 className="page-title">Pendaftaran Pasien</h2>
+        <div>
+          <h2 className="page-title">Pendaftaran Pasien</h2>
+          <p className="page-subtitle">Daftarkan kunjungan baru dan kelola antrean hari ini.</p>
+        </div>
         <button className="btn btn-primary" onClick={openCreate}>
-          <Icon name="plus" size={16} /> Daftar Baru
+          <Icon name="plus" size={16} /> Pendaftaran Baru
         </button>
       </div>
 

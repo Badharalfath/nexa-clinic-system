@@ -2495,6 +2495,111 @@ details[open] summary {
   border-top: 1px solid var(--border);
 }
 
+/* ===== Confirm (archive / permanent delete) modal ===== */
+.modal-body {
+  padding: 20px 22px;
+}
+.confirm-patient {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+.confirm-patient strong {
+  display: block;
+  color: var(--ink);
+  font-size: 14px;
+}
+.confirm-patient small {
+  display: block;
+  font-size: 11.5px;
+}
+.confirm-counts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.confirm-count {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+}
+.confirm-count-num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.confirm-count-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.confirm-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+  background: var(--primary-mist);
+  border: 1px solid rgba(14, 147, 132, 0.25);
+  border-radius: 10px;
+  padding: 10px 13px;
+  line-height: 1.55;
+}
+.confirm-note svg {
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.btn-danger-text {
+  width: 100%;
+  justify-content: center;
+  margin-top: 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--danger);
+  font-weight: 600;
+}
+.btn-danger-text:hover {
+  background: var(--danger-soft);
+  border-color: rgba(200, 55, 47, 0.3);
+}
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}
+.btn-danger:hover {
+  background: #b02e27;
+}
+.modal-head-danger h3 {
+  color: var(--danger);
+}
+.alert-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+.alert-block svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
 /* ===== Utilities ===== */
 .loading {
   text-align: center;

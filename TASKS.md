@@ -1,4 +1,4 @@
-# Tasks — Mini Clinic Information System
+# Tasks Mini Clinic Information System
 
 Based on: TECHNICAL ASSIGNMENT PROGRAMMER NEXA
 
@@ -32,3 +32,21 @@ Based on: TECHNICAL ASSIGNMENT PROGRAMMER NEXA
 - Database: PostgreSQL
 - Auth: JWT
 - Version Control: Git
+
+## Task log
+
+### T-2026-08-02-01 Implement Stitch design system in frontend — DONE
+- Acceptance criteria (all verified, 2026-08-02):
+  - [x] Design tokens (Clinical Blue #005EB8, Inter, radii, status colors) applied in `frontend/src/index.css`
+  - [x] Navy sidebar "NEXA CIS" + topbar user chip + logout (Layout.jsx)
+  - [x] Dashboard KPI cards + Antrean Berikutnya panel + Aksi Cepat (real API data)
+  - [x] Patients: toolbar search+sort, mono RM/NIK, auto-RM modal banner
+  - [x] Queues: hero panel + queue table with status badges
+  - [x] Examination: patient header, vitals grid with unit suffixes (mmHg/°C/kg/cm)
+  - [x] Login/history/registrations rebranded and restyled
+  - [x] `npm run lint` 0 errors; `npm run build` passing; browser E2E on all routes
+
+## Active task
+
+Resolve AS-001 through AS-009 (open assumptions), then audit FR-001..FR-029
+and API-001..API-018 into `REQUIREMENTS.md` + `TEST_MATRIX.md` (Milestone 0).

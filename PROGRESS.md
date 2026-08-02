@@ -35,16 +35,22 @@
 - [x] Patient detail view, visit date, check_in status, NIK 16-digit validation
 - [x] "Panggil Berikutnya" explicit queue action
 - [x] Responsive sidebar (rail tablet / drawer mobile)
-- [x] ErrorBoundary + unmount-safe fetches (no white screen)
+- [x] ErrorBoundary unmount-safe fetches (no white screen)
+- [x] Patient delete: archive (soft delete, paranoid) + related-counts modal
+      + permanent delete (admin, type-to-confirm) 2026-08-02
+- [x] Login two-column layout with demo info card 2026-08-02
 
-## Phase 9: PRD & Docs
-- [x] PRD folder (prd/nexa-clinic-system.prd.md) — acuan PDF
-- [x] Frontend ↔ Backend integration (USE_MOCK off, verified live)
-- [x] Postman Collection (23 requests, 7 folders) + environment
-- [ ] README.md final
-- [ ] Video Demo
-- [ ] .env.example final check
-- [ ] Final push
+## Phase 9: PRD Docs
+- [x] PRD folder (prd/nexa-clinic-system.prd.md) acuan PDF
+- [x] Frontend Backend integration USE_MOCK off, verified live)
+- [x] Postman Collection (23 requests, 7 folders) environment
+- [x] Design Stitch implemented (Corporate Modern Clinical Blue "NEXA CIS",
+      navy sidebar, KPI cards, queue hero, SOAP vitals grid, unit suffixes;
+      lint 0 error, build pass, E2E browser verified) — 2026-08-02
+- README.md final
+- Video Demo
+- .env.example final check
+- Final push
 
 ## Backend Milestones (git history)
 - M1: foundation + auth (dotenv, auth path fix) — `6961f7d`

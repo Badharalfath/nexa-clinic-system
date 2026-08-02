@@ -59,8 +59,9 @@ const Patient = sequelize.define('patients', {
     allowNull: true
   }
 }, {
+  paranoid: true,
   hooks: {
-    // Must run before validate (Sequelize validates before beforeCreate)
+    //Must run beforevalidate (Sequelize validates before beforeCreate)
     beforeValidate: generateMedicalRecordNumber
   }
 });

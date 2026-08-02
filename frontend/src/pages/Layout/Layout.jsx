@@ -12,6 +12,15 @@ const navItems = [
   { path: '/history', label: 'Riwayat', icon: 'fileText', roles: ['dokter', 'administrator'] },
 ];
 
+const initials = (name) =>
+  (name || '?')
+    .split(' ')
+    .map((w) => w[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
 export default function Layout() {
   const { user, logout, hasRole } = useAuth();
   const location = useLocation();
@@ -28,8 +37,8 @@ export default function Layout() {
 
   const roleBadge = {
     administrator: { label: 'Admin', class: 'badge-purple' },
-    dokter: { label: 'Dokter', class: 'badge-green' },
-    petugas_pendaftaran: { label: 'Petugas', class: 'badge-blue' },
+    dokter: { label: 'Dokter', class: 'badge-emerald' },
+    petugas_pendaftaran: { label: 'Petugas', class: 'badge-sky' },
   };
 
   const roleLabel = {
@@ -37,6 +46,8 @@ export default function Layout() {
     dokter: 'Dokter',
     petugas_pendaftaran: 'Petugas Pendaftaran',
   };
+
+  const currentLabel = navItems.find((n) => n.path === location.pathname)?.label || 'Dashboard';
 
   return (
     <div className={`layout ${sidebarOpen ? 'sidebar-open' : 'sidebar-hidden'}`}>
@@ -46,25 +57,27 @@ export default function Layout() {
           <aside className="sidebar">
             <div className="sidebar-header">
               <div className="logo-mark" aria-hidden="true">
-                <span className="logo-glyph">K+</span>
+                <span className="logo-glyph">N</span>
               </div>
               <div className="brand-text">
-                <h2>Klinik<span className="brand-accent">Sehat</span></h2>
-                <p className="sidebar-sub">Sistem Informasi Klinik</p>
+                <h2>NEXA <span className="brand-accent">CIS</span></h2>
+                <p className="sidebar-sub">Clinical System</p>
               </div>
             </div>
             <nav className="sidebar-nav">
-              {navItems.filter(n => hasRole(...n.roles)).map(item => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  title={item.label}
-                  className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
-                >
-                  <Icon name={item.icon} size={18} className="nav-icon" />
-                  <span>{item.label}</span>
-                </Link>
-              ))}
+              {navItems
+                .filter((n) => hasRole(...n.roles))
+                .map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    title={item.label}
+                    className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+                  >
+                    <Icon name={item.icon} size={18} className="nav-icon" />
+                    <span>{item.label}</span>
+                  </Link>
+                ))}
             </nav>
             <div className="sidebar-footer">
               <div className="user-card" title={user?.name}>
@@ -89,9 +102,20 @@ export default function Layout() {
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="btn-toggle" aria-label="Toggle sidebar">
             <Icon name={sidebarOpen ? 'close' : 'menu'} size={17} />
           </button>
-          <span className="topbar-title">
-            {navItems.find(n => n.path === location.pathname)?.label || 'Dashboard'}
-          </span>
+          <span className="topbar-title">{currentLabel}</span>
+          <span className="topbar-spacer" />
+          <div className="topbar-user" title={`${user?.name} — ${roleLabel[user?.role]}`}>
+            <span className="topbar-avatar">{initials(user?.name)}</span>
+            <span className="topbar-user-info">
+              <span className="topbar-name">{user?.name}</span>
+              <br />
+              <span className="topbar-role">{roleLabel[user?.role]}</span>
+            </span>
+          </div>
+          <button onClick={handleLogout} className="topbar-logout" title="Logout">
+            <Icon name="logout" size={15} />
+            <span>Logout</span>
+          </button>
         </header>
         <div className="content">
           <Outlet />

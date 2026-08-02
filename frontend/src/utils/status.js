@@ -1,6 +1,8 @@
 // Status labels & badge classes — single source of truth.
-// Registration statuses (PDF): Menunggu, Check (Check In), Pemeriksaan, Selesai
+// Registration statuses (PDF): Menunggu, Check In, Pemeriksaan, Selesai
 // Queue statuses: Menunggu, Dipanggil, Pemeriksaan, Selesai, Lewat
+// Badge colors follow the NEXA CIS design system status tokens:
+// menunggu=slate, check_in/dipanggil=sky, pemeriksaan=amber, selesai=emerald, lewat=red
 
 const STATUS_LABELS = {
   menunggu: 'Menunggu',
@@ -19,16 +21,18 @@ export function statusLabel(status) {
 export function statusBadgeClass(status) {
   switch (status) {
     case 'selesai':
-      return 'badge-green';
+      return 'badge-emerald';
     case 'menunggu':
-      return 'badge-yellow';
+      return 'badge-slate';
     case 'check_in':
     case 'check_up':
     case 'dipanggil':
-      return 'badge-blue';
+      return 'badge-sky';
     case 'pemeriksaan':
-      return 'badge-purple';
+      return 'badge-amber';
+    case 'lewat':
+      return 'badge-red';
     default:
-      return 'badge-blue';
+      return 'badge-slate';
   }
 }
