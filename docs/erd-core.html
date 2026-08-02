@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<title>ERD — Alur Inti Klinik</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fff; font-family: 'Helvetica Neue', Arial, sans-serif; padding: 32px; }
+  .sheet { width: 980px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 700; color: #111; letter-spacing: -0.01em; }
+  .sub { font-size: 11.5px; color: #666; margin-top: 3px; margin-bottom: 18px; }
+  .canvas { position: relative; width: 980px; height: 520px; }
+  .entity {
+    position: absolute; width: 210px; background: #fff;
+    border: 1.5px solid #1c2733; border-radius: 4px; overflow: hidden;
+    font-size: 11px;
+  }
+  .entity .head { background: #1c2733; color: #fff; font-weight: 700; font-size: 11.5px; padding: 7px 10px; text-align: center; letter-spacing: 0.02em; }
+  .entity .attr { padding: 4px 10px; border-top: 0.75px solid #e3e7ec; color: #222; display: flex; justify-content: space-between; gap: 8px; }
+  .entity .attr .t { color: #8a9199; font-size: 9.5px; white-space: nowrap; }
+  .pk { font-weight: 700; text-decoration: underline; }
+  .fk { color: #0b63a8; }
+  .rel { stroke: #3c4a57; stroke-width: 1.4; fill: none; }
+  .crow { fill: #3c4a57; }
+  .rel-label {
+    position: absolute; background: #fff; border: 1px solid #b9c2cb; border-radius: 8px;
+    font-size: 8.5px; font-weight: 700; color: #333; padding: 1.5px 6px; text-align: center; line-height: 1.35;
+    white-space: nowrap; z-index: 5;
+  }
+  .legend { display: flex; gap: 18px; font-size: 10.5px; color: #444; margin-top: 16px; border-top: 1px solid #e3e7ec; padding-top: 12px; }
+  .legend b { font-weight: 700; }
+  .u { text-decoration: underline; }
+  .foot { font-size: 10px; color: #999; margin-top: 12px; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <h1>ERD — Alur Inti Pelayanan Klinik</h1>
+  <div class="sub">Pasien → Pendaftaran → Antrean → Pemeriksaan (SOAP)</div>
+
+  <div class="canvas">
+    <!-- PATIENTS -->
+    <div class="entity" style="left:20px;top:140px;">
+      <div class="head">PATIENTS</div>
+      <div class="attr"><span class="pk">id <span class="t">UUID PK</span></span></div>
+      <div class="attr"><span>medical_record_number <span class="t">VARCHAR(20)</span></span></div>
+      <div class="attr"><span>nik <span class="t">VARCHAR(16)</span></span></div>
+      <div class="attr"><span>name <span class="t">VARCHAR(100)</span></span></div>
+      <div class="attr"><span>gender <span class="t">ENUM</span></span></div>
+      <div class="attr"><span>birth_date <span class="t">DATE</span></span></div>
+    </div>
+
+    <!-- USERS -->
+    <div class="entity" style="left:20px;top:20px;width:200px;">
+      <div class="head">USERS</div>
+      <div class="attr"><span class="pk">id <span class="t">UUID PK</span></span></div>
+      <div class="attr"><span>username <span class="t">VARCHAR(50)</span></span></div>
+      <div class="attr"><span>name <span class="t">VARCHAR(100)</span></span></div>
+      <div class="attr"><span>role <span class="t">ENUM</span></span></div>
+    </div>
+
+    <!-- REGISTRATIONS -->
+    <div class="entity" style="left:300px;top:170px;width:215px;">
+      <div class="head">REGISTRATIONS</div>
+      <div class="attr"><span class="pk">id <span class="t">UUID PK</span></span></div>
+      <div class="attr"><span class="fk">patient_id <span class="t">UUID FK</span></span></div>
+      <div class="attr"><span class="fk">doctor_id <span class="t">UUID FK</span></span></div>
+      <div class="attr"><span class="fk">polyclinic_id <span class="t">UUID FK</span></span></div>
+      <div class="attr"><span>registration_date <span class="t">DATE</span></span></div>
+      <div class="attr"><span>payment_type <span class="t">ENUM</span></span></div>
+      <div class="attr"><span>status <span class="t">ENUM</span></span></div>
+    </div>
+
+    <!-- QUEUES -->
+    <div class="entity" style="left:590px;top:60px;width:190px;">
+      <div class="head">QUEUES</div>
+      <div class="attr"><span class="pk">id <span class="t">UUID PK</span></span></div>
+      <div class="attr"><span class="fk">registration_id <span class="t">UUID FK</span></span></div>
+      <div class="attr"><span>queue_number <span class="t">VARCHAR(10)</span></span></div>
+      <div class="attr"><span>status <span class="t">ENUM</span></span></div>
+      <div class="attr"><span>called_at <span class="t">TIMESTAMP</span></span></div>
+    </div>
+
+    <!-- MEDICAL_RECORDS -->
+    <div class="entity" style="left:590px;top:320px;width:200px;">
+      <div class="head">MEDICAL_RECORDS</div>
+      <div class="attr"><span class="pk">id <span class="t">UUID PK</span></span></div>
+      <div class="attr"><span class="fk">registration_id <span class="t">UUID FK</span></span></div>
+      <div class="attr"><span class="fk">patient_id <span class="t">UUID FK</span></span></div>
+      <div class="attr"><span class="fk">doctor_id <span class="t">UUID FK</span></span></div>
+      <div class="attr"><span>subjective <span class="t">TEXT (S)</span></span></div>
+      <div class="attr"><span>assessment <span class="t">TEXT (A)</span></span></div>
+      <div class="attr"><span>plan <span class="t">TEXT (P)</span></span></div>
+    </div>
+
+    <!-- relations -->
+    <svg width="980" height="520" style="position:absolute;left:0;top:0;pointer-events:none;">
+      <!-- users 1--N registrations -->
+      <path class="rel" d="M 220 60 L 300 200"/>
+      <path class="crow" d="M 300 200 l -8 -4 m 8 4 l -8 4"/>
+      <text x="222" y="120" font-size="9.5" fill="#333" font-weight="700">dokter</text>
+
+      <!-- patients 1--N registrations -->
+      <path class="rel" d="M 230 210 L 300 210"/>
+      <path class="crow" d="M 300 210 l -8 -4 m 8 4 l -8 4"/>
+      <text x="240" y="200" font-size="9.5" fill="#333" font-weight="700">1</text>
+      <text x="276" y="200" font-size="9.5" fill="#333" font-weight="700">N</text>
+
+      <!-- registrations 1--1 queues -->
+      <path class="rel" d="M 515 200 L 590 150"/>
+      <path class="crow" d="M 590 150 l -8 -4 m 8 4 l -8 4"/>
+      <text x="526" y="180" font-size="9.5" fill="#333" font-weight="700">1</text>
+      <text x="560" y="156" font-size="9.5" fill="#333" font-weight="700">1</text>
+
+      <!-- registrations 1--1 medical_records -->
+      <path class="rel" d="M 515 260 C 540 300, 560 320, 590 360"/>
+      <path class="crow" d="M 590 360 l -8 -4 m 8 4 l -8 4"/>
+      <text x="520" y="310" font-size="9.5" fill="#333" font-weight="700">1</text>
+      <text x="560" y="344" font-size="9.5" fill="#333" font-weight="700">1</text>
+
+      <!-- patients 1--N medical_records -->
+      <path class="rel" d="M 230 290 C 380 420, 520 420, 590 380"/>
+      <path class="crow" d="M 590 380 l -8 -4 m 8 4 l -8 4"/>
+      <text x="400" y="420" font-size="9.5" fill="#333" font-weight="700">riwayat</text>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <span><b class="u">id</b> Primary Key</span>
+    <span><b style="color:#0b63a8">patient_id</b> Foreign Key</span>
+    <span><svg width="34" height="12" style="vertical-align:middle"><path d="M2 6 H28" stroke="#3c4a57" stroke-width="1.4"/><path d="M28 2 l6 4 l-6 4 z" fill="#3c4a57"/></svg> 1 — N</span>
+    <span><svg width="34" height="12" style="vertical-align:middle"><path d="M2 6 H32" stroke="#3c4a57" stroke-width="1.4"/></svg> 1 — 1</span>
+  </div>
+  <div class="foot">Setiap pendaftaran otomatis membuat satu antrean; setiap pendaftaran maksimal satu pemeriksaan (SOAP).</div>
+</div>
+</body>
+</html>
