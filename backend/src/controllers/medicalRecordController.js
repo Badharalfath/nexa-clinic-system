@@ -57,6 +57,14 @@ const createMedicalRecord = async (req, res) => {
 const getPatientMedicalRecords = async (req, res) => {
   try {
     const { patientId } = req.params;
+    const isAdmin = req.user?.role === 'administrator';
+
+    // Guard: archived patients are invisible to non-admin roles
+    const patient = await Patient.findByPk(patientId, { paranoid: isAdmin ? false : true });
+    if (!patient) {
+      return ApiResponse.notFound(res, 'Patient not found');
+    }
+
     const records = await MedicalRecord.findAll({
       where: { patientId },
       include: [
@@ -99,9 +107,12 @@ const getMedicalRecord = async (req, res) => {
 
 const getRecentPatients = async (req, res) => {
   try {
+    const isAdmin = req.user?.role === 'administrator';
     const records = await MedicalRecord.findAll({
       include: [
-        { model: Patient, as: 'patient', attributes: ['id', 'medicalRecordNumber', 'nik', 'name', 'gender'] },
+        // paranoid=false only for admin so archived patients still visible to them;
+        // non-admin roles get default paranoid (archived patients excluded)
+        { model: Patient, as: 'patient', attributes: ['id', 'medicalRecordNumber', 'nik', 'name', 'gender'], paranoid: isAdmin ? false : true },
         { model: User, as: 'doctor', attributes: ['id', 'name'] },
         { model: Registration, as: 'registration', include: [{ model: Polyclinic, as: 'polyclinic', attributes: ['name'] }] }
       ],

@@ -29,6 +29,14 @@ const statusTone = {
   lewat: 'red',
 };
 
+// Format angka menjadi Rupiah: 50000 -> "Rp 50.000"
+const formatRupiah = (n) => {
+  if (n === '' || n === null || n === undefined) return '';
+  const num = String(n).replace(/\D/g, '');
+  return 'Rp ' + (num ? Number(num).toLocaleString('id-ID') : '');
+};
+const parseRupiah = (str) => String(str || '').replace(/[^\d]/g, '');
+
 export default function ExaminationPage() {
   const { user } = useAuth();
   const [queues, setQueues] = useState([]);
@@ -89,7 +97,7 @@ export default function ExaminationPage() {
       plan: h.plan || '',
     }));
     setActions((h.medicalActions || []).map((a) => ({
-      actionName: a.actionName, actionDescription: a.actionDescription || '', cost: a.cost != null ? String(a.cost) : '0',
+      actionName: a.actionName, actionDescription: a.actionDescription || '', cost: a.cost ? String(a.cost) : '',
     })));
     setPrescriptions((h.prescriptions || []).map((p) => ({
       drugName: p.drugName, dosage: p.dosage || '', quantity: p.quantity || 1, instructions: p.instructions || '',
@@ -97,10 +105,10 @@ export default function ExaminationPage() {
     setSuccess('Form pemeriksaan terisi dari riwayat terpilih. Sesuaikan bila perlu.');
   };
 
-  const addAction = () => setActions([...actions, { actionName: '', actionDescription: '', cost: 0 }]);
+  const addAction = () => setActions([...actions, { actionName: '', actionDescription: '', cost: '' }]);
   const updateAction = (i, field, value) => {
     const a = [...actions];
-    a[i][field] = value;
+    a[i][field] = field === 'cost' ? parseRupiah(value) : value;
     setActions(a);
   };
   const removeAction = (i) => setActions(actions.filter((_, idx) => idx !== i));
@@ -228,85 +236,93 @@ export default function ExaminationPage() {
 
               <form onSubmit={handleSubmit} className="soap-form">
                 <h3>Catatan Pemeriksaan</h3>
+                <div className="soap-guide">
+                  <Icon name="activity" size={14} />
+                  <span>
+                    <strong>Wajib diisi:</strong> Subjective (S), Assessment (A), Plan (P).
+                    Objective (O), tindakan &amp; resep <strong>opsional</strong> — isi bila dilakukan.
+                    Keluhan sudah terisi otomatis dari pendaftaran.
+                  </span>
+                </div>
 
-                {/* S - Subjective */}
+                {/* Subjective */}
                 <div className="soap-section">
                   <div className="soap-section-head">
                     <span className="soap-letter soap-s">S</span>
                     <div className="soap-section-title">
-                      <span className="soap-name">Subjective</span>
+                      <span className="soap-name">Subjective <em className="soap-req">wajib</em></span>
                       <span className="soap-desc">Keluhan pasien</span>
                     </div>
                   </div>
                   <textarea rows={3} value={form.subjective} onChange={(e) => setForm({ ...form, subjective: e.target.value })}
-                    placeholder="Tuliskan keluhan yang dirasakan pasien..." />
+                    placeholder="Contoh: Demam sejak 2 hari, batuk berdahak, nyeri tenggorokan..." />
                 </div>
 
-                {/* O - Objective */}
+                {/* Objective */}
                 <div className="soap-section">
                   <div className="soap-section-head">
                     <span className="soap-letter soap-o">O</span>
                     <div className="soap-section-title">
-                      <span className="soap-name">Objective</span>
-                      <span className="soap-desc">Hasil pemeriksaan fisik</span>
+                      <span className="soap-name">Objective <em className="soap-opt">opsional</em></span>
+                      <span className="soap-desc">Hasil pemeriksaan fisik — kosongkan yang tidak diukur</span>
                     </div>
                   </div>
                   <div className="vitals-grid">
                     <div className="form-group">
                       <label htmlFor="td">Tekanan Darah</label>
                       <div className="input-group">
-                        <input id="td" placeholder="120/80" value={form.objectiveBloodPressure} onChange={(e) => setForm({ ...form, objectiveBloodPressure: e.target.value })} />
+                        <input id="td" placeholder="cth: 120/80" value={form.objectiveBloodPressure} onChange={(e) => setForm({ ...form, objectiveBloodPressure: e.target.value })} />
                         <span className="input-group-suffix">mmHg</span>
                       </div>
                     </div>
                     <div className="form-group">
                       <label htmlFor="suhu">Suhu Tubuh</label>
                       <div className="input-group">
-                        <input id="suhu" type="number" step="0.1" placeholder="36.5" value={form.objectiveTemperature} onChange={(e) => setForm({ ...form, objectiveTemperature: e.target.value })} />
+                        <input id="suhu" type="number" step="0.1" placeholder="cth: 36.5" value={form.objectiveTemperature} onChange={(e) => setForm({ ...form, objectiveTemperature: e.target.value })} />
                         <span className="input-group-suffix">°C</span>
                       </div>
                     </div>
                     <div className="form-group">
                       <label htmlFor="bb">Berat Badan</label>
                       <div className="input-group">
-                        <input id="bb" type="number" step="0.1" placeholder="65" value={form.objectiveWeight} onChange={(e) => setForm({ ...form, objectiveWeight: e.target.value })} />
+                        <input id="bb" type="number" step="0.1" placeholder="cth: 65" value={form.objectiveWeight} onChange={(e) => setForm({ ...form, objectiveWeight: e.target.value })} />
                         <span className="input-group-suffix">kg</span>
                       </div>
                     </div>
                     <div className="form-group">
                       <label htmlFor="tb">Tinggi Badan</label>
                       <div className="input-group">
-                        <input id="tb" type="number" step="0.1" placeholder="170" value={form.objectiveHeight} onChange={(e) => setForm({ ...form, objectiveHeight: e.target.value })} />
+                        <input id="tb" type="number" step="0.1" placeholder="cth: 170" value={form.objectiveHeight} onChange={(e) => setForm({ ...form, objectiveHeight: e.target.value })} />
                         <span className="input-group-suffix">cm</span>
                       </div>
                     </div>
                   </div>
-                  </div>
+                </div>
 
-                {/* A - Assessment */}
+                {/* Assessment */}
                 <div className="soap-section">
                   <div className="soap-section-head">
                     <span className="soap-letter soap-a">A</span>
                     <div className="soap-section-title">
-                      <span className="soap-name">Assessment</span>
+                      <span className="soap-name">Assessment <em className="soap-req">wajib</em></span>
                       <span className="soap-desc">Diagnosa</span>
                     </div>
                   </div>
                   <textarea rows={3} value={form.assessment} onChange={(e) => setForm({ ...form, assessment: e.target.value })}
-                    placeholder="Diagnosa / kesimpulan pemeriksaan..." />
+                    placeholder="Contoh: ISPA (J06.9), febris observasi, hipertensi grade 1..." />
                 </div>
 
-                {/* P - Plan */}
+                {/* Plan */}
                 <div className="soap-section">
                   <div className="soap-section-head">
                     <span className="soap-letter soap-p">P</span>
                     <div className="soap-section-title">
-                      <span className="soap-name">Plan</span>
+                      <span className="soap-name">Plan <em className="soap-req">wajib</em></span>
                       <span className="soap-desc">Rencana terapi</span>
                     </div>
                   </div>
                   <textarea rows={3} value={form.plan} onChange={(e) => setForm({ ...form, plan: e.target.value })}
-                    placeholder="Rencana tindak lanjut / terapi..." />
+                    placeholder="Contoh: Istirahat cukup, minum obat sesuai resep, kontrol ulang 3 hari..." />
                 </div>
 
                 {/* Tindakan Medis */}
@@ -319,11 +335,18 @@ export default function ExaminationPage() {
                     </div>
                   </div>
                   {actions.map((a, i) => (
-                    <div key={i} className="form-row action-row">
+                    <div className="form-row action-row">
                       <div className="form-group"><input placeholder="Nama tindakan" value={a.actionName} onChange={(e) => updateAction(i, 'actionName', e.target.value)} /></div>
                       <div className="form-group"><input placeholder="Deskripsi" value={a.actionDescription} onChange={(e) => updateAction(i, 'actionDescription', e.target.value)} /></div>
-                      <div className="form-group" style={{ maxWidth: 130 }}>
-                        <input type="number" placeholder="Biaya" value={a.cost} onChange={(e) => updateAction(i, 'cost', e.target.value)} />
+                      <div className="form-group" style={{ maxWidth: 160 }}>
+                        <div className="input-group">
+                          <input
+                            inputMode="numeric" placeholder="Biaya (Rp)" value={formatRupiah(a.cost)}
+                            onChange={(e) => updateAction(i, 'cost', e.target.value)}
+                            aria-label="Biaya tindakan dalam Rupiah"
+                          />
+                          <span className="input-group-suffix">IDR</span>
+                        </div>
                       </div>
                       <button type="button" className="icon-btn icon-btn-danger" onClick={() => removeAction(i)} aria-label="Hapus">
                         <Icon name="trash" size={14} />

@@ -27,9 +27,10 @@ export default function PatientsPage() {
   const [patientRegistrations, setPatientRegistrations] = useState([]);
   const [detailLoading, setDetailLoading] = useState(false);
 
-  // Archive / permanent delete state
+  //Archive / permanent delete state
   const { hasRole } = useAuth();
   const isAdmin = hasRole('administrator');
+  const [statusFilter, setStatusFilter] = useState('aktif');
   const [archiveTarget, setArchiveTarget] = useState(null);
   const [archiveCounts, setArchiveCounts] = useState(null);
   const [countsLoading, setCountsLoading] = useState(false);
@@ -41,7 +42,7 @@ export default function PatientsPage() {
   const fetchPatients = async () => {
     setLoading(true);
     try {
-      const res = await patientsAPI.getAll({ page, limit: 10, search });
+      const res = await patientsAPI.getAll({ page, limit: 10, search, status: statusFilter });
       setPatients(res.data.data.patients || []);
       setPagination(res.data.data.pagination || { total: 0, page: 1, totalPages: 1 });
     } catch (err) {
@@ -54,7 +55,7 @@ export default function PatientsPage() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    patientsAPI.getAll({ page, limit: 10, search })
+    patientsAPI.getAll({ page, limit: 10, search, status: statusFilter })
       .then((res) => {
         if (cancelled) return;
         setPatients(res.data.data.patients || []);
@@ -63,7 +64,7 @@ export default function PatientsPage() {
       .catch((err) => { if (!cancelled) console.error(err); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [page, search]);
+  }, [page, search, statusFilter]);
 
   //Client-side sort current page (Stitch master-data pattern)
   const sortedPatients = [...patients].sort((a, b) => {
@@ -179,6 +180,13 @@ export default function PatientsPage() {
     setArchiveTarget(null);
   };
 
+  // Admin: langsung buka modal hapus permanen dari baris pasien arsip
+  const openPermanentFromRow = (p) => {
+    setPermanentTarget(p);
+    setConfirmText('');
+    setActionError('');
+  };
+
   const closePermanent = () => {
     setPermanentTarget(null);
     setConfirmText('');
@@ -226,6 +234,20 @@ export default function PatientsPage() {
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           />
         </div>
+        {isAdmin && (
+          <div className="filter-tabs" role="tablist" aria-label="Filter status pasien">
+            <button
+              type="button"
+              className={`filter-tab ${statusFilter === 'aktif' ? 'active' : ''}`}
+              onClick={() => { setStatusFilter('aktif'); setPage(1); }}
+            >Aktif</button>
+            <button
+              type="button"
+              className={`filter-tab ${statusFilter === 'arsip' ? 'active' : ''}`}
+              onClick={() => { setStatusFilter('arsip'); setPage(1); }}
+            >Arsip</button>
+          </div>
+        )}
         <select
           className="toolbar-select"
           aria-label="Urutkan"
@@ -249,10 +271,13 @@ export default function PatientsPage() {
             {loading ? <tr><td colSpan="7" className="text-center">Loading...</td></tr> :
             patients.length === 0 ? <tr><td colSpan="7" className="text-center">Tidak ada data</td></tr> :
             sortedPatients.map((p) => (
-              <tr key={p.id}>
+              <tr key={p.id} className={p.isArchived ? 'row-archived' : ''}>
                 <td><code>{p.medicalRecordNumber}</code></td>
                 <td>{p.nik}</td>
-                <td className="cell-strong">{p.name}</td>
+                <td className="cell-strong">
+                  {p.name}
+                  {p.isArchived && <span className="badge badge-archived">Arsip</span>}
+                </td>
                 <td>{p.gender === 'L' ? 'Laki-laki' : 'Perempuan'}</td>
                 <td>{formatDate(p.birthDate)}</td>
                 <td>{p.phone || '—'}</td>
@@ -261,12 +286,21 @@ export default function PatientsPage() {
                     <button className="icon-btn" title="Lihat detail" onClick={() => openDetail(p)}>
                       <Icon name="eye" size={15} />
                     </button>
-                    <button className="icon-btn" title="Ubah data" onClick={() => openEdit(p)}>
-                      <Icon name="edit" size={15} />
-                    </button>
-                    <button className="icon-btn icon-btn-danger" title="Arsipkan / hapus" onClick={() => openArchive(p)}>
-                      <Icon name="trash" size={15} />
-                    </button>
+                    {!p.isArchived && (
+                      <>
+                        <button className="icon-btn" title="Ubah data" onClick={() => openEdit(p)}>
+                          <Icon name="edit" size={15} />
+                        </button>
+                        <button className="icon-btn icon-btn-danger" title="Arsipkan / hapus" onClick={() => openArchive(p)}>
+                          <Icon name="trash" size={15} />
+                        </button>
+                      </>
+                    )}
+                    {p.isArchived && isAdmin && (
+                      <button className="icon-btn icon-btn-danger" title="Hapus permanen" onClick={() => openPermanentFromRow(p)}>
+                        <Icon name="trash" size={15} />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -433,12 +467,12 @@ export default function PatientsPage() {
         </div>
       )}
 
-      {/* ===== Archive Confirm Modal ===== */}
+      {/* ===== Archive Confirm Modal (beda admin vs petugas) ===== */}
       {archiveTarget && (
         <div className="modal-overlay" onClick={closeArchive}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-head">
-              <h3>Arsipkan Pasien?</h3>
+              <h3>{isAdmin ? 'Arsipkan Pasien?' : 'Hapus Pasien?'}</h3>
               <button className="icon-btn" onClick={closeArchive} aria-label="Tutup">
                 <Icon name="close" size={16} />
               </button>
@@ -461,28 +495,35 @@ export default function PatientsPage() {
               ) : (
                 <div className="confirm-counts">
                   <div className="confirm-count">
-                    <span className="confirm-count-num">{archiveCounts?.registrations ?? 0}</span>
+                    <span className="confirm-count-num">{archiveCounts?.registrations || 0}</span>
                     <span className="confirm-count-label">Pendaftaran</span>
                   </div>
                   <div className="confirm-count">
-                    <span className="confirm-count-num">{archiveCounts?.medicalRecords ?? 0}</span>
+                    <span className="confirm-count-num">{archiveCounts?.medicalRecords || 0}</span>
                     <span className="confirm-count-label">Pemeriksaan</span>
                   </div>
                   <div className="confirm-count">
-                    <span className="confirm-count-num">{archiveCounts?.prescriptions ?? 0}</span>
+                    <span className="confirm-count-num">{archiveCounts?.prescriptions || 0}</span>
                     <span className="confirm-count-label">Resep</span>
                   </div>
                   <div className="confirm-count">
-                    <span className="confirm-count-num">{archiveCounts?.queues ?? 0}</span>
+                    <span className="confirm-count-num">{archiveCounts?.queues || 0}</span>
                     <span className="confirm-count-label">Antrean</span>
                   </div>
                 </div>
               )}
 
-              <p className="confirm-note">
-                <Icon name="clock" size={14} />
-                Pasien akan <strong>diarsipkan</strong>: hilang dari daftar &amp; pencarian, tetapi semua riwayat pemeriksaan, pendaftaran, dan resep <strong>tetap tersimpan</strong>.
-              </p>
+              {isAdmin ? (
+                <p className="confirm-note">
+                  <Icon name="clock" size={14} />
+                  Pasien akan <strong>diarsipkan</strong>: hilang dari daftar &amp; pencarian, tetapi semua riwayat pemeriksaan, pendaftaran, dan resep <strong>tetap tersimpan</strong>. Hanya administrator yang dapat melihat pasien arsip.
+                </p>
+              ) : (
+                <p className="confirm-note">
+                  <Icon name="clock" size={14} />
+                  Pasien akan <strong>dihapus dari daftar aktif</strong> dan tidak ditemukan dalam pencarian. Data rekam medisnya tetap tersimpan sesuai aturan penyimpanan rekam medis.
+                </p>
+              )}
 
               {isAdmin && (
                 <button type="button" className="btn btn-ghost btn-danger-text" onClick={openPermanent} disabled={actionBusy}>
@@ -493,7 +534,7 @@ export default function PatientsPage() {
             <div className="modal-actions">
               <button type="button" className="btn btn-secondary" onClick={closeArchive} disabled={actionBusy}>Batal</button>
               <button type="button" className="btn btn-primary" onClick={confirmArchive} disabled={actionBusy || countsLoading}>
-                {actionBusy ? 'Memproses...' : 'Arsipkan Pasien'}
+                {actionBusy ? 'Memproses...' : (isAdmin ? 'Arsipkan Pasien' : 'Hapus Pasien')}
               </button>
             </div>
           </div>

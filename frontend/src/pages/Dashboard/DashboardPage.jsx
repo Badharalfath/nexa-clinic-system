@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { dashboardAPI, queuesAPI } from '../../api/axios';
+import { useAuth } from '../../context/AuthContext';
 import Icon from '../../components/Icon';
 import { statusLabel } from '../../utils/status';
 
@@ -19,7 +20,27 @@ const dateFormatter = new Intl.DateTimeFormat('id-ID', {
   year: 'numeric',
 });
 
+const quickActions = {
+  administrator: [
+    { to: '/registrations', icon: 'plus', label: 'Pendaftaran Baru', primary: true },
+    { to: '/queues', icon: 'phone', label: 'Panggil Antrean' },
+    { to: '/patients', icon: 'users', label: 'Master Data Pasien' },
+    { to: '/history', icon: 'fileText', label: 'Riwayat Pemeriksaan' },
+  ],
+  dokter: [
+    { to: '/examination', icon: 'activity', label: 'Pemeriksaan Pasien', primary: true },
+    { to: '/queues', icon: 'phone', label: 'Panggil Antrean' },
+    { to: '/history', icon: 'fileText', label: 'Riwayat Pemeriksaan' },
+  ],
+  petugas_pendaftaran: [
+    { to: '/registrations', icon: 'plus', label: 'Pendaftaran Baru', primary: true },
+    { to: '/queues', icon: 'phone', label: 'Panggil Antrean' },
+    { to: '/patients', icon: 'users', label: 'Master Data Pasien' },
+  ],
+};
+
 export default function DashboardPage() {
+  const { user } = useAuth();
   const [data, setData] = useState(null);
   const [queues, setQueues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -120,22 +141,16 @@ export default function DashboardPage() {
             <span className="dash-panel-meta">{doneCount} selesai</span>
           </div>
           <div className="dash-actions">
-            <button className="dash-action-btn primary" onClick={() => navigate('/registrations')}>
-              <Icon name="plus" size={20} />
-              Pendaftaran Baru
-            </button>
-            <button className="dash-action-btn" onClick={() => navigate('/queues')}>
-              <Icon name="phone" size={20} />
-              Panggil Antrean
-            </button>
-            <button className="dash-action-btn" onClick={() => navigate('/patients')}>
-              <Icon name="users" size={20} />
-              Master Data Pasien
-            </button>
-            <button className="dash-action-btn" onClick={() => navigate('/history')}>
-              <Icon name="fileText" size={20} />
-              Riwayat Pemeriksaan
-            </button>
+            {(quickActions[user?.role] || []).map((act) => (
+              <button
+                key={act.to}
+                className={`dash-action-btn ${act.primary ? 'primary' : ''}`}
+                onClick={() => navigate(act.to)}
+              >
+                <Icon name={act.icon} size={20} />
+                {act.label}
+              </button>
+            ))}
           </div>
         </section>
       </div>

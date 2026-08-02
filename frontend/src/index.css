@@ -326,60 +326,6 @@ svg.icon {
 .topbar-spacer {
   flex: 1;
 }
-.topbar-user {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 5px 6px 5px 5px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-}
-.topbar-avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: #fff;
-  font-size: 11.5px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  letter-spacing: 0.02em;
-}
-.topbar-user-info {
-  line-height: 1.25;
-}
-.topbar-name {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--ink);
-}
-.topbar-role {
-  font-size: 10.5px;
-  color: var(--ink-3);
-  font-weight: 500;
-}
-.topbar-logout {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--ink-2);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.topbar-logout:hover {
-  color: var(--danger);
-  border-color: rgba(239, 68, 68, 0.35);
-  background: var(--danger-soft);
-}
 
 .content {
   padding: 28px;
@@ -1979,6 +1925,50 @@ input[type="date"] {
   color: var(--ink);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.soap-name em {
+  font-style: normal;
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 1.5px 7px;
+  border-radius: 999px;
+  line-height: 1.4;
+}
+.soap-name em.soap-req {
+  color: #b42318;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+}
+.soap-name em.soap-opt {
+  color: #5b6b7f;
+  background: #f2f4f7;
+  border: 1px solid #d0d5dd;
+}
+.soap-guide {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+  border-radius: 10px;
+  padding: 10px 13px;
+  margin-bottom: 18px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #0f766e;
+}
+.soap-guide svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #0d9488;
+}
+.soap-guide strong {
+  color: #0f766e;
 }
 .soap-desc {
   font-size: 11.5px;
@@ -2469,6 +2459,51 @@ details[open] summary {
     transform: none;
   }
 }
+/* ===== Filter tabs (Aktif / Arsip) — master data pasien ===== */
+.filter-tabs {
+  display: flex;
+  gap: 2px;
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+}
+.filter-tab {
+  border: none;
+  background: transparent;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+  padding: 5px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.filter-tab:hover {
+  color: var(--ink);
+}
+.filter-tab.active {
+  background: var(--surface);
+  color: var(--primary);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+}
+/* ===== Archived patient row & badge ===== */
+tr.row-archived td {
+  opacity: 0.6;
+}
+.badge-archived {
+  margin-left: 8px;
+  background: #f2f4f7;
+  border: 1px solid #d0d5dd;
+  color: #475467;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  vertical-align: middle;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
 .modal-lg {
   width: 740px;
 }
@@ -2806,8 +2841,4 @@ details[open] summary {
   .topbar {
     padding: 0 16px;
   }
-  .topbar-user-info,
-  .topbar-logout span {
-    display: none;
   }
-}

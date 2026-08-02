@@ -19,7 +19,7 @@ router.get('/:id', getPatient);
 router.get('/:id/related-counts', getPatientRelatedCounts);
 router.post('/', authorize('administrator', 'petugas_pendaftaran'), validate(patientSchema), createPatient);
 router.put('/:id', authorize('administrator', 'petugas_pendaftaran'), validate(patientSchema), updatePatient);
-router.delete('/:id', authorize('administrator'), deletePatient);
+router.delete('/:id', authorize('administrator', 'petugas_pendaftaran'), deletePatient);
 router.delete('/:id/permanent', authorize('administrator'), permanentDeletePatient);
 
 module.exports = router;

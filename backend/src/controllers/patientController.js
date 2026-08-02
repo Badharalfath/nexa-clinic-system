@@ -4,7 +4,7 @@ const ApiResponse = require('../utils/apiResponse');
 
 const getPatients = async (req, res) => {
   try {
-    const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'DESC' } = req.query;
+    const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'DESC', status } = req.query;
     const offset = (page - 1) * limit;
     const where = {};
 
@@ -17,15 +17,38 @@ const getPatients = async (req, res) => {
       ];
     }
 
+    // Role-aware archive visibility:
+    // - administrator: can see archived patients (status=arsip|aktif|semua)
+    // - other roles: archived patients are hidden entirely (default paranoid)
+    const isAdmin = req.user?.role === 'administrator';
+    let paranoid = true;
+    if (isAdmin && status === 'semua') paranoid = false;
+    if (isAdmin && status === 'arsip') {
+      paranoid = false;
+      where.deletedAt = { [Op.not]: null };
+    }
+    if (isAdmin && status === 'aktif') {
+      paranoid = false;
+      where.deletedAt = null;
+    }
+
     const { count, rows } = await Patient.findAndCountAll({
       where,
       order: [[sortBy, sortOrder]],
       limit: parseInt(limit),
       offset: parseInt(offset),
+      paranoid,
+    });
+
+    // Expose archive flag for the UI (admin badge)
+    const patients = rows.map((p) => {
+      const plain = p.get({ plain: true });
+      plain.isArchived = Boolean(p.deletedAt);
+      return plain;
     });
 
     return ApiResponse.success(res, {
-      patients: rows,
+      patients,
       pagination: {
         total: count,
         page: parseInt(page),
@@ -41,11 +64,14 @@ const getPatients = async (req, res) => {
 
 const getPatient = async (req, res) => {
   try {
-    const patient = await Patient.findByPk(req.params.id);
+    const isAdmin = req.user?.role === 'administrator';
+    const patient = await Patient.findByPk(req.params.id, { paranoid: isAdmin ? false : true });
     if (!patient) {
       return ApiResponse.notFound(res, 'Patient not found');
     }
-    return ApiResponse.success(res, patient);
+    const plain = patient.get({ plain: true });
+    plain.isArchived = Boolean(patient.deletedAt);
+    return ApiResponse.success(res, plain);
   } catch (error) {
     console.error('Get patient error:', error);
     return ApiResponse.error(res, 'Failed to fetch patient');

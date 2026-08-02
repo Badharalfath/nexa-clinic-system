@@ -104,18 +104,6 @@ export default function Layout() {
           </button>
           <span className="topbar-title">{currentLabel}</span>
           <span className="topbar-spacer" />
-          <div className="topbar-user" title={`${user?.name} — ${roleLabel[user?.role]}`}>
-            <span className="topbar-avatar">{initials(user?.name)}</span>
-            <span className="topbar-user-info">
-              <span className="topbar-name">{user?.name}</span>
-              <br />
-              <span className="topbar-role">{roleLabel[user?.role]}</span>
-            </span>
-          </div>
-          <button onClick={handleLogout} className="topbar-logout" title="Logout">
-            <Icon name="logout" size={15} />
-            <span>Logout</span>
-          </button>
         </header>
         <div className="content">
           <Outlet />
