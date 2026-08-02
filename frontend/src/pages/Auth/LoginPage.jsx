@@ -3,12 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Icon from '../../components/Icon';
 
-const demoAccounts = [
-  { label: 'Admin', u: 'admin', p: 'password123', dot: 'chip-admin', role: 'Akses penuh semua modul', icon: 'users' },
-  { label: 'Dokter', u: 'dr.sari', p: 'password123', dot: 'chip-dokter', role: 'Pemeriksaan SOAP & resep', icon: 'cross' },
-  { label: 'Petugas', u: 'petugas1', p: 'password123', dot: 'chip-petugas', role: 'Pendaftaran & antrean', icon: 'clock' },
-];
-
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -29,12 +23,6 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fillDemo = (acc) => {
-    setUsername(acc.u);
-    setPassword(acc.p);
-    setError('');
   };
 
   return (
@@ -91,42 +79,8 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          <div className="login-footer">
-            <p>Klik kartu akun demo di samping untuk mengisi form login otomatis.</p>
           </div>
-        </div>
-
-        {/* Kolom kanan: kartu info demo */}
-        <div className="login-demo-card">
-          <div className="demo-card-head">
-            <span className="demo-card-badge">Mode Demo</span>
-            <h3>Informasi Akun Demo</h3>
-            <p>Klik akun di bawah untuk mengisi form login secara otomatis.</p>
           </div>
-
-          <div className="demo-account-list">
-            {demoAccounts.map((acc) => (
-              <button key={acc.u} type="button" className="demo-account-row" onClick={() => fillDemo(acc)}>
-                <span className={`demo-account-icon ${acc.dot}`}>
-                  <Icon name={acc.icon} size={16} />
-                </span>
-                <span className="demo-account-info">
-                  <strong>{acc.label}</strong>
-                  <small>{acc.role}</small>
-                  <code className="demo-account-hint">Klik untuk mengisi otomatis</code>
-                </span>
-                <Icon name="chevronRight" size={15} className="demo-account-arrow" />
-              </button>
-            ))}
           </div>
-
-          <div className="demo-card-tip">
-            <Icon name="clock" size={14} />
-            <span>Data demo sudah terisi: pasien, antrean, dan riwayat pemeriksaan.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+          );
 }

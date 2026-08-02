@@ -434,7 +434,8 @@ svg.icon {
   display: flex;
   gap: 22px;
   align-items: stretch;
-  max-width: 940px;
+  justify-content: center;
+  max-width: 424px;
   width: 100%;
 }
 .login-card {
