@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<title>ERD Mapping — Relational Schema</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fff; font-family: Helvetica, Arial, sans-serif; padding: 28px; }
+  .sheet { width: 1180px; margin: 0 auto; }
+  h1 { font-size: 18px; font-weight: 700; color: #111; letter-spacing: -0.01em; }
+  .sub { font-size: 11px; color: #666; margin: 3px 0 16px; }
+  .canvas { position: relative; width: 1180px; height: 840px; }
+
+  /* ---- table box ---- */
+  .tbl {
+    position: absolute; width: 200px; background: #fff;
+    border: 1.5px solid #111; border-radius: 3px; overflow: hidden;
+    font-size: 11px; box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  .tbl .th { background: #dcdcdc; font-weight: 700; font-size: 11.5px; text-align: center; padding: 5px 8px; border-bottom: 1.5px solid #111; letter-spacing: 0.02em; }
+  .tbl .col { padding: 2.5px 8px; border-top: 0.6px solid #e2e2e2; display: flex; justify-content: space-between; gap: 6px; }
+  .tbl .col .ty { color: #8a8a8a; font-size: 8.5px; white-space: nowrap; padding-top: 1px; }
+  .pk { font-weight: 700; text-decoration: underline; }
+  .fk { color: #0b63a8; font-weight: 600; }
+
+  /* ---- orthogonal relation line ---- */
+  .rel { stroke: #111; stroke-width: 1.2; fill: none; stroke-linecap: round; }
+
+  .legend { display: flex; gap: 22px; font-size: 10.5px; color: #444; margin-top: 14px; border-top: 1px solid #e0e0e0; padding-top: 10px; }
+  .legend b { font-weight: 700; }
+  .u { text-decoration: underline; }
+  .foot { font-size: 9.5px; color: #999; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <h1>Relational Schema — Mini Clinic Information System</h1>
+  <div class="sub">Mapping relasional · 8 tabel · PostgreSQL · garis siku 90°</div>
+
+  <div class="canvas">
+    <!-- ===== USERS ===== -->
+    <div class="tbl" style="left:40px;top:50px;">
+      <div class="th">USERS</div>
+      <div class="col"><span class="pk">id</span><span class="ty">UUID</span></div>
+      <div class="col"><span>username</span><span class="ty">VARCHAR(50)</span></div>
+      <div class="col"><span>email</span><span class="ty">VARCHAR(100)</span></div>
+      <div class="col"><span>password</span><span class="ty">VARCHAR(255)</span></div>
+      <div class="col"><span>name</span><span class="ty">VARCHAR(100)</span></div>
+      <div class="col"><span>role</span><span class="ty">ENUM</span></div>
+      <div class="col"><span>is_active</span><span class="ty">BOOL</span></div>
+    </div>
+
+    <!-- ===== POLYCLINICS ===== -->
+    <div class="tbl" style="left:40px;top:260px;">
+      <div class="th">POLYCLINICS</div>
+      <div class="col"><span class="pk">id</span><span class="ty">UUID</span></div>
+      <div class="col"><span>name</span><span class="ty">VARCHAR(100)</span></div>
+      <div class="col"><span>description</span><span class="ty">TEXT</span></div>
+    </div>
+
+    <!-- ===== PATIENTS ===== -->
+    <div class="tbl" style="left:40px;top:470px;">
+      <div class="th">PATIENTS</div>
+      <div class="col"><span class="pk">id</span><span class="ty">UUID</span></div>
+      <div class="col"><span>medical_record_number</span><span class="ty">VARCHAR(20)</span></div>
+      <div class="col"><span>nik</span><span class="ty">VARCHAR(16)</span></div>
+      <div class="col"><span>name</span><span class="ty">VARCHAR(100)</span></div>
+      <div class="col"><span>gender</span><span class="ty">ENUM</span></div>
+      <div class="col"><span>birth_date</span><span class="ty">DATE</span></div>
+      <div class="col"><span>phone</span><span class="ty">VARCHAR(15)</span></div>
+      <div class="col"><span>address</span><span class="ty">TEXT</span></div>
+    </div>
+
+    <!-- ===== REGISTRATIONS ===== -->
+    <div class="tbl" style="left:420px;top:200px;">
+      <div class="th">REGISTRATIONS</div>
+      <div class="col"><span class="pk">id</span><span class="ty">UUID</span></div>
+      <div class="col"><span class="fk">patient_id</span><span class="ty">UUID FK</span></div>
+      <div class="col"><span class="fk">doctor_id</span><span class="ty">UUID FK</span></div>
+      <div class="col"><span class="fk">polyclinic_id</span><span class="ty">UUID FK</span></div>
+      <div class="col"><span>registration_date</span><span class="ty">DATE</span></div>
+      <div class="col"><span>payment_type</span><span class="ty">ENUM</span></div>
+      <div class="col"><span>complaint</span><span class="ty">TEXT</span></div>
+      <div class="col"><span>status</span><span class="ty">ENUM</span></div>
+    </div>
+
+    <!-- ===== QUEUES ===== -->
+    <div class="tbl" style="left:780px;top:40px;">
+      <div class="th">QUEUES</div>
+      <div class="col"><span class="pk">id</span><span class="ty">UUID</span></div>
+      <div class="col"><span class="fk">registration_id</span><span class="ty">UUID FK</span></div>
+      <div class="col"><span>queue_number</span><span class="ty">VARCHAR(10)</span></div>
+      <div class="col"><span>status</span><span class="ty">ENUM</span></div>
+      <div class="col"><span>called_at</span><span class="ty">TIMESTAMP</span></div>
+    </div>
+
+    <!-- ===== MEDICAL_RECORDS ===== -->
+    <div class="tbl" style="left:780px;top:340px;">
+      <div class="th">MEDICAL_RECORDS</div>
+      <div class="col"><span class="pk">id</span><span class="ty">UUID</span></div>
+      <div class="col"><span class="fk">registration_id</span><span class="ty">UUID FK</span></div>
+      <div class="col"><span class="fk">patient_id</span><span class="ty">UUID FK</span></div>
+      <div class="col"><span class="fk">doctor_id</span><span class="ty">UUID FK</span></div>
+      <div class="col"><span>subjective</span><span class="ty">TEXT</span></div>
+      <div class="col"><span>objective_blood_pressure</span><span class="ty">VARCHAR(20)</span></div>
+      <div class="col"><span>objective_temperature</span><span class="ty">DECIMAL</span></div>
+      <div class="col"><span>objective_weight</span><span class="ty">DECIMAL</span></div>
+      <div class="col"><span>objective_height</span><span class="ty">DECIMAL</span></div>
+      <div class="col"><span>assessment</span><span class="ty">TEXT</span></div>
+      <div class="col"><span>plan</span><span class="ty">TEXT</span></div>
+    </div>
+
+    <!-- ===== MEDICAL_ACTIONS ===== -->
+    <div class="tbl" style="left:1060px;top:480px;">
+      <div class="th">MEDICAL_ACTIONS</div>
+      <div class="col"><span class="pk">id</span><span class="ty">UUID</span></div>
+      <div class="col"><span class="fk">medical_record_id</span><span class="ty">UUID FK</span></div>
+      <div class="col"><span>action_name</span><span class="ty">VARCHAR(200)</span></div>
+      <div class="col"><span>action_description</span><span class="ty">TEXT</span></div>
+      <div class="col"><span>cost</span><span class="ty">DECIMAL</span></div>
+    </div>
+
+    <!-- ===== PRESCRIPTIONS ===== -->
+    <div class="tbl" style="left:1060px;top:640px;">
+      <div class="th">PRESCRIPTIONS</div>
+      <div class="col"><span class="pk">id</span><span class="ty">UUID</span></div>
+      <div class="col"><span class="fk">medical_record_id</span><span class="ty">UUID FK</span></div>
+      <div class="col"><span>drug_name</span><span class="ty">VARCHAR(200)</span></div>
+      <div class="col"><span>dosage</span><span class="ty">VARCHAR(100)</span></div>
+      <div class="col"><span>quantity</span><span class="ty">INTEGER</span></div>
+      <div class="col"><span>instructions</span><span class="ty">TEXT</span></div>
+    </div>
+
+    <!-- ===== ORTHOGONAL 90° RELATIONS ===== -->
+    <svg width="1180" height="840" style="position:absolute;left:0;top:0;pointer-events:none;">
+      <!-- 1 users.doctor_id -> registrations -->
+      <path class="rel" d="M 240 110 H 360 V 220 H 420"/>
+      <!-- 2 polyclinics -> registrations -->
+      <path class="rel" d="M 240 290 H 420"/>
+      <!-- 3 patients -> registrations -->
+      <path class="rel" d="M 240 560 H 360 V 260 H 420"/>
+      <!-- 4 registrations -> queues (1:1) -->
+      <path class="rel" d="M 620 250 H 700 V 90 H 780"/>
+      <!-- 5 registrations -> medical_records (1:1) -->
+      <path class="rel" d="M 620 320 H 660 V 340 H 780"/>
+      <!-- 6 patients -> medical_records -->
+      <path class="rel" d="M 240 640 H 700 V 480 H 780"/>
+      <!-- 7 users.doctor_id -> medical_records -->
+      <path class="rel" d="M 240 150 H 700 V 20 H 1000 V 400 H 980"/>
+      <!-- 8 medical_records -> medical_actions -->
+      <path class="rel" d="M 980 480 H 1060"/>
+      <!-- 9 medical_records -> prescriptions -->
+      <path class="rel" d="M 980 540 H 1000 V 680 H 1060"/>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <span><b class="u">id</b> Primary Key</span>
+    <span><b class="fk">patient_id</b> Foreign Key</span>
+    <span><svg width="30" height="12" style="vertical-align:middle"><path d="M2 6 H20" stroke="#111" stroke-width="1.2"/><path d="M20 2 l7 4 l-7 4 z" fill="#111"/></svg> 1 — N</span>
+    <span><svg width="30" height="12" style="vertical-align:middle"><path d="M2 6 H28" stroke="#111" stroke-width="1.2"/></svg> 1 — 1</span>
+    <span>Garis siku 90° (orthogonal routing)</span>
+  </div>
+  <div class="foot">relasi 1:1 — satu pendaftaran menghasilkan satu antrean dan maksimal satu pemeriksaan (SOAP).</div>
+</div>
+</body>
+</html>
