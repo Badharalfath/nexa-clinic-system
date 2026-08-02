@@ -107,7 +107,14 @@ export default function PatientsPage() {
   const handleNikChange = (value) => {
     const digits = value.replace(/\D/g, '').slice(0, 16);
     setForm({ ...form, nik: digits });
-    if (digits.length > 0 && digits.length < 16) {
+    // Validasi hanya saat blur (focus keluar field), bukan saat mengetik
+    if (digits.length === 16 || digits.length === 0) {
+      setNikError('');
+    }
+  };
+
+  const handleNikBlur = () => {
+    if (form.nik.length > 0 && form.nik.length < 16) {
       setNikError('NIK harus tepat 16 digit angka');
     } else {
       setNikError('');
@@ -423,6 +430,7 @@ export default function PatientsPage() {
                   <input
                     id="nik" type="text" inputMode="numeric" value={form.nik}
                     onChange={(e) => handleNikChange(e.target.value)}
+                    onBlur={handleNikBlur}
                     placeholder="16 digit NIK" required
                     className={nikError ? 'field-invalid' : ''}
                   />

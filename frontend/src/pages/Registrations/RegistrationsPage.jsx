@@ -158,11 +158,11 @@ export default function RegistrationsPage() {
                 <label htmlFor="searchPatient">Cari Pasien</label>
                 <input id="searchPatient" type="text" placeholder="Cari nama, NIK, atau no. rekam medis..." value={searchPatient}
                   onChange={e => setSearchPatient(e.target.value)} />
-                <select size={Math.min(Math.max(filteredPatients.length, 1), 6)} value={form.patientId}
-                  onChange={e => setForm({...form, patientId: e.target.value})} required className="mt-1">
+                <select value={form.patientId}
+                  onChange={(e) => setForm({ ...form, patientId: e.target.value })} required className="mt-1">
                   <option value="">— Pilih Pasien —</option>
-                  {filteredPatients.map(p => (
-                    <option key={p.id} value={p.id}>{p.name} — {p.nik} ({p.medicalRecordNumber})</option>
+                  {filteredPatients.map((p) => (
+                    <option key={p.id} value={p.id}>{p.name} · {p.nik} ({p.medicalRecordNumber})</option>
                   ))}
                 </select>
               </div>
