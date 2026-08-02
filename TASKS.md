@@ -46,6 +46,19 @@ Based on: TECHNICAL ASSIGNMENT PROGRAMMER NEXA
   - [x] Login/history/registrations rebranded and restyled
   - [x] `npm run lint` 0 errors; `npm run build` passing; browser E2E on all routes
 
+### T-2026-08-03-01 Verify and correct project ERD — DONE
+- Acceptance criteria (all verified, 2026-08-03):
+  - [x] Eight persisted PostgreSQL tables and their key fields match `backend/database/schema.sql`.
+  - [x] Nine foreign-key relations map to the SQL constraints and Sequelize associations.
+  - [x] `queues.registration_id` and `medical_records.registration_id` are shown as `0..1` per registration, because `UNIQUE` limits the child count without requiring it.
+  - [x] Mermaid source and relational-schema visual are available in `docs/`, with a rendered visual review recorded in `TEST_MATRIX.md`.
+
+### T-2026-08-03-02 Create a Chen-style ERD visual — DONE
+- Acceptance criteria (all verified, 2026-08-03):
+  - [x] `docs/erd-diagram.html` presents entities as rectangles, relationships as diamonds, and core attributes as ovals, matching the requested Chen-style reference.
+  - [x] All nine database relationships have labeled cardinalities; the two registration child relations retain their database-accurate `0..1` cardinality.
+  - [x] The full PNG was rendered and visually inspected at 1760 × 1600 without clipped content or overlapping registration cardinality labels.
+
 ## Active task
 
 Resolve AS-001 through AS-009 (open assumptions), then audit FR-001..FR-029

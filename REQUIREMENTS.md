@@ -9,6 +9,7 @@ Status values: `Missing`, `Pending`, `In progress`, `Partial`, `Complete`,
 | ID | Requirement | Source | Acceptance criteria | Priority | Status |
 |---|---|---|---|---|---|
 | PLAN-REQ-001 | Complete source-to-requirement audit | Product/PRD/DESIGN | Every source item is represented or explicitly excluded with a reason | P0 | In progress |
+| DELIV-ERD-001 | Provide an ERD for the implemented PostgreSQL schema | PRD §8, deliverable 4 | Diagram includes the eight persisted tables, PK/UK/FK fields, all FK relationships, and database-accurate cardinalities | P0 | Complete |
 
 ## Contradictions and missing acceptance criteria
 

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<title>ERD Diagram — Chen Notation</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fff; font-family: Helvetica, Arial, sans-serif; padding: 28px; }
+  .sheet { width: 1200px; margin: 0 auto; }
+  h1 { font-size: 18px; font-weight: 700; color: #111; letter-spacing: -0.01em; }
+  .sub { font-size: 11px; color: #666; margin: 3px 0 16px; }
+  .canvas { position: relative; width: 1200px; height: 980px; }
+
+  .ent {
+    position: absolute; background: #fff; border: 2px solid #111; border-radius: 2px;
+    font-size: 12px; font-weight: 700; color: #111;
+    display: flex; align-items: center; justify-content: center;
+    letter-spacing: 0.03em; z-index: 2;
+  }
+  .attr {
+    position: absolute; background: #fff; border: 1.5px solid #111; border-radius: 50%;
+    font-size: 10px; color: #111; display: flex; align-items: center; justify-content: center;
+    padding: 4px 6px; z-index: 2; white-space: nowrap;
+  }
+  .attr.pk { font-weight: 700; text-decoration: underline; }
+  .attr.fk { font-weight: 600; color: #0b63a8; }
+
+  .legend { display: flex; gap: 24px; font-size: 10.5px; color: #444; margin-top: 16px; border-top: 1px solid #e0e0e0; padding-top: 10px; align-items: center; }
+  .leg-shape { display: inline-flex; align-items: center; gap: 6px; }
+  .leg-rect { width: 26px; height: 16px; border: 1.5px solid #111; background: #fff; }
+  .leg-dia { width: 18px; height: 18px; border: 1.5px solid #111; background: #fff; transform: rotate(45deg); }
+  .leg-oval { width: 30px; height: 16px; border: 1.5px solid #111; border-radius: 50%; background: #fff; }
+  .u { text-decoration: underline; }
+  .foot { font-size: 9.5px; color: #999; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <h1>Entity Relationship Diagram — Mini Clinic Information System</h1>
+  <div class="sub">Notasi Chen · entitas ◻ · relasi ◇ · atribut ◯ · garis siku 90°</div>
+
+  <div class="canvas">
+    <svg width="1200" height="980" style="position:absolute;left:0;top:0;pointer-events:none;z-index:1;">
+      <!-- ============ RELATION LINES (orthogonal) ============ -->
+      <!-- 1 PATIENTS -> DAFTAR -->
+      <path d="M 135 148 V 240 H 185 V 268" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 2 DAFTAR -> REGISTRATIONS -->
+      <path d="M 185 352 V 500 H 300" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 3 USERS -> DITANGANI -->
+      <path d="M 380 148 V 240 H 455 V 268" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 4 DITANGANI -> REGISTRATIONS -->
+      <path d="M 455 352 V 400 H 375 V 480" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 5 POLYCLINICS -> POLI -->
+      <path d="M 700 148 V 240 H 700 V 268" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 6 POLI -> REGISTRATIONS -->
+      <path d="M 700 352 V 420 H 375 V 480" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 7 REGISTRATIONS -> MENGHASILKAN -->
+      <path d="M 430 500 H 560 V 470 H 598" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 8 MENGHASILKAN -> QUEUES -->
+      <path d="M 682 470 H 760 V 494 H 780" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 9 REGISTRATIONS -> PEMERIKSAAN -->
+      <path d="M 375 528 H 450 V 600 H 420" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 10 PATIENTS -> RIWAYAT -->
+      <path d="M 135 148 V 560 H 140 V 598" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 11 RIWAYAT -> MEDICAL_RECORDS -->
+      <path d="M 140 682 V 740 H 395 V 885" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 12 USERS -> DOKTER -->
+      <path d="M 455 148 V 200 H 560 V 598" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 13 DOKTER -> MEDICAL_RECORDS -->
+      <path d="M 560 682 V 760 H 470 V 885" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 14 MEDICAL_RECORDS -> TINDAKAN -->
+      <path d="M 510 885 V 800 H 542" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 15 TINDAKAN -> MEDICAL_ACTIONS -->
+      <path d="M 584 800 H 760 V 885" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 16 MEDICAL_RECORDS -> RESEP -->
+      <path d="M 510 885 V 750 H 962 V 786" stroke="#111" stroke-width="1.2" fill="none"/>
+      <!-- 17 RESEP -> PRESCRIPTIONS -->
+      <path d="M 1004 828 V 909 H 1000" stroke="#111" stroke-width="1.2" fill="none"/>
+
+      <!-- ============ ATTRIBUTE SHORT LINES ============ -->
+      <!-- PATIENTS -->
+      <line x1="135" y1="100" x2="125" y2="66" stroke="#111" stroke-width="1"/>
+      <line x1="205" y1="100" x2="215" y2="66" stroke="#111" stroke-width="1"/>
+      <line x1="135" y1="148" x2="135" y2="178" stroke="#111" stroke-width="1"/>
+      <!-- USERS -->
+      <line x1="455" y1="100" x2="455" y2="66" stroke="#111" stroke-width="1"/>
+      <line x1="530" y1="100" x2="540" y2="66" stroke="#111" stroke-width="1"/>
+      <line x1="455" y1="148" x2="455" y2="178" stroke="#111" stroke-width="1"/>
+      <!-- POLYCLINICS -->
+      <line x1="775" y1="100" x2="775" y2="66" stroke="#111" stroke-width="1"/>
+      <line x1="850" y1="100" x2="860" y2="66" stroke="#111" stroke-width="1"/>
+      <line x1="775" y1="148" x2="775" y2="178" stroke="#111" stroke-width="1"/>
+      <!-- REGISTRATIONS -->
+      <line x1="320" y1="480" x2="255" y2="452" stroke="#111" stroke-width="1"/>
+      <line x1="375" y1="480" x2="375" y2="452" stroke="#111" stroke-width="1"/>
+      <line x1="430" y1="480" x2="530" y2="452" stroke="#111" stroke-width="1"/>
+      <!-- QUEUES -->
+      <line x1="810" y1="470" x2="760" y2="452" stroke="#111" stroke-width="1"/>
+      <line x1="880" y1="470" x2="935" y2="452" stroke="#111" stroke-width="1"/>
+      <line x1="810" y1="518" x2="838" y2="560" stroke="#111" stroke-width="1"/>
+      <!-- MEDICAL_RECORDS -->
+      <line x1="360" y1="885" x2="291" y2="866" stroke="#111" stroke-width="1"/>
+      <line x1="400" y1="885" x2="431" y2="838" stroke="#111" stroke-width="1"/>
+      <line x1="360" y1="930" x2="251" y2="946" stroke="#111" stroke-width="1"/>
+      <!-- MEDICAL_ACTIONS -->
+      <line x1="760" y1="885" x2="691" y2="796" stroke="#111" stroke-width="1"/>
+      <line x1="760" y1="885" x2="791" y2="800" stroke="#111" stroke-width="1"/>
+      <line x1="910" y1="905" x2="926" y2="936" stroke="#111" stroke-width="1"/>
+      <!-- PRESCRIPTIONS -->
+      <line x1="1000" y1="885" x2="901" y2="796" stroke="#111" stroke-width="1"/>
+      <line x1="1050" y1="885" x2="1091" y2="812" stroke="#111" stroke-width="1"/>
+      <line x1="1050" y1="885" x2="1046" y2="856" stroke="#111" stroke-width="1"/>
+
+      <!-- ============ RELATIONSHIP DIAMONDS ============ -->
+      <g>
+        <polygon points="143,310 185,268 227,310 185,352" fill="#fff" stroke="#111" stroke-width="2"/>
+        <text x="185" y="314" font-size="10" font-weight="700" fill="#111" text-anchor="middle" font-family="Helvetica,Arial">DAFTAR</text>
+      </g>
+      <g>
+        <polygon points="413,310 455,268 497,310 455,352" fill="#fff" stroke="#111" stroke-width="2"/>
+        <text x="455" y="314" font-size="10" font-weight="700" fill="#111" text-anchor="middle" font-family="Helvetica,Arial">DITANGANI</text>
+      </g>
+      <g>
+        <polygon points="658,310 700,268 742,310 700,352" fill="#fff" stroke="#111" stroke-width="2"/>
+        <text x="700" y="314" font-size="10" font-weight="700" fill="#111" text-anchor="middle" font-family="Helvetica,Arial">POLI</text>
+      </g>
+      <g>
+        <polygon points="598,470 640,428 682,470 640,512" fill="#fff" stroke="#111" stroke-width="2"/>
+        <text x="640" y="474" font-size="10" font-weight="700" fill="#111" text-anchor="middle" font-family="Helvetica,Arial">MENGHASILKAN</text>
+      </g>
+      <g>
+        <polygon points="378,640 420,598 462,640 420,682" fill="#fff" stroke="#111" stroke-width="2"/>
+        <text x="420" y="644" font-size="10" font-weight="700" fill="#111" text-anchor="middle" font-family="Helvetica,Arial">PEMERIKSAAN</text>
+      </g>
+      <g>
+        <polygon points="98,640 140,598 182,640 140,682" fill="#fff" stroke="#111" stroke-width="2"/>
+        <text x="140" y="644" font-size="10" font-weight="700" fill="#111" text-anchor="middle" font-family="Helvetica,Arial">RIWAYAT</text>
+      </g>
+      <g>
+        <polygon points="518,640 560,598 602,640 560,682" fill="#fff" stroke="#111" stroke-width="2"/>
+        <text x="560" y="644" font-size="10" font-weight="700" fill="#111" text-anchor="middle" font-family="Helvetica,Arial">DOKTER</text>
+      </g>
+      <g>
+        <polygon points="500,800 542,758 584,800 542,842" fill="#fff" stroke="#111" stroke-width="2"/>
+        <text x="542" y="804" font-size="10" font-weight="700" fill="#111" text-anchor="middle" font-family="Helvetica,Arial">TINDAKAN</text>
+      </g>
+      <g>
+        <polygon points="920,828 962,786 1004,828 962,870" fill="#fff" stroke="#111" stroke-width="2"/>
+        <text x="962" y="832" font-size="10" font-weight="700" fill="#111" text-anchor="middle" font-family="Helvetica,Arial">RESEP</text>
+      </g>
+    </svg>
+
+    <!-- ================= ENTITIES ================= -->
+    <div class="ent" style="left:60px;top:100px;width:150px;height:48px;">PATIENTS</div>
+    <div class="ent" style="left:380px;top:100px;width:150px;height:48px;">USERS</div>
+    <div class="ent" style="left:700px;top:100px;width:150px;height:48px;">POLYCLINICS</div>
+    <div class="ent" style="left:300px;top:480px;width:150px;height:48px;">REGISTRATIONS</div>
+    <div class="ent" style="left:780px;top:470px;width:150px;height:48px;">QUEUES</div>
+    <div class="ent" style="left:320px;top:885px;width:150px;height:48px;">MEDICAL_RECORDS</div>
+    <div class="ent" style="left:720px;top:885px;width:150px;height:48px;">MEDICAL_ACTIONS</div>
+    <div class="ent" style="left:960px;top:885px;width:150px;height:48px;">PRESCRIPTIONS</div>
+
+    <!-- ================= ATTRIBUTES ================= -->
+    <!-- PATIENTS -->
+    <div class="attr pk" style="left:90px;top:44px;">id</div>
+    <div class="attr" style="left:190px;top:44px;">nik</div>
+    <div class="attr" style="left:75px;top:178px;">name</div>
+    <!-- USERS -->
+    <div class="attr pk" style="left:420px;top:44px;">id</div>
+    <div class="attr" style="left:530px;top:44px;">username</div>
+    <div class="attr" style="left:410px;top:178px;">role</div>
+    <!-- POLYCLINICS -->
+    <div class="attr pk" style="left:740px;top:44px;">id</div>
+    <div class="attr" style="left:850px;top:44px;">name</div>
+    <div class="attr" style="left:730px;top:178px;">description</div>
+    <!-- REGISTRATIONS -->
+    <div class="attr pk" style="left:200px;top:434px;">id</div>
+    <div class="attr fk" style="left:330px;top:434px;">patient_id</div>
+    <div class="attr fk" style="left:480px;top:434px;">doctor_id</div>
+    <!-- QUEUES -->
+    <div class="attr pk" style="left:700px;top:436px;">id</div>
+    <div class="attr fk" style="left:880px;top:436px;">registration_id</div>
+    <div class="attr" style="left:780px;top:560px;">queue_number</div>
+    <!-- MEDICAL_RECORDS -->
+    <div class="attr pk" style="left:240px;top:848px;">id</div>
+    <div class="attr fk" style="left:350px;top:820px;">registration_id</div>
+    <div class="attr fk" style="left:200px;top:928px;">patient_id</div>
+    <!-- MEDICAL_ACTIONS -->
+    <div class="attr pk" style="left:640px;top:778px;">id</div>
+    <div class="attr fk" style="left:700px;top:778px;">medical_record_id</div>
+    <div class="attr" style="left:870px;top:918px;">cost</div>
+    <!-- PRESCRIPTIONS -->
+    <div class="attr pk" style="left:850px;top:778px;">id</div>
+    <div class="attr fk" style="left:1000px;top:794px;">medical_record_id</div>
+    <div class="attr" style="left:980px;top:838px;">drug_name</div>
+  </div>
+
+  <div class="legend">
+    <span class="leg-shape"><span class="leg-rect"></span> Entitas</span>
+    <span class="leg-shape"><span class="leg-dia"></span> Relasi</span>
+    <span class="leg-shape"><span class="leg-oval"></span> Atribut</span>
+    <span><b class="u">id</b> Primary Key</span>
+    <span style="color:#0b63a8"><b>patient_id</b> Foreign Key</span>
+  </div>
+  <div class="foot">Menampilkan atribut kunci per entitas; atribut lengkap (SOAP, resep, dll) lihat Relational Schema. 1:1 — satu pendaftaran menghasilkan satu antrean dan satu pemeriksaan.</div>
+</div>
+</body>
+</html>

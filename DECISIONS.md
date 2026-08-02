@@ -37,3 +37,16 @@ Record only durable decisions future models must preserve.
   preference: no emoji, no external icon font).
 - Consequences: Frontend theme "Klinik Sehat" replaced NEXA CIS.
   Backend unchanged. Design source`DESIGN.md` frontend must follow.
+
+### D-004 — SQL schema is authoritative for the ERD
+
+- Status: accepted
+- Date: 2026-08-03
+- Context: ERD cardinality must reflect database-enforced constraints, not only
+  the intended clinical workflow.
+- Decision: Derive `docs/erd.mmd` and `docs/erd-mapping.html` from
+  `backend/database/schema.sql`; show `registrations` → `queues` and
+  `registrations` → `medical_records` as `0..1` on the child side because
+  their foreign keys are unique but no constraint requires a child row.
+- Consequences: The ERD remains correct for registrations that have not yet
+  progressed to queueing or examination.
