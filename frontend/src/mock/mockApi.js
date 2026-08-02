@@ -299,6 +299,27 @@ export async function mockApi(method, url, data = null, params = {}) {
     return { status: 200, data: { success: true, data: clone(records) } };
   }
 
+  if (method === 'get' && url === '/api/medical-records/recent-patients') {
+    const seen = new Map();
+    const sorted = [...s.medicalRecords].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    for (const r of sorted) {
+      const pid = r.patient?.id || r.registrationId;
+      const prev = seen.get(pid);
+      if (prev) {
+        prev.visitCount += 1;
+      } else {
+        seen.set(pid, {
+          patient: r.patient || null,
+          lastVisit: r.createdAt,
+          lastPolyclinic: r.registration?.polyclinic?.name || null,
+          lastDoctor: r.doctor?.name || null,
+          visitCount: 1,
+        });
+      }
+    }
+    return { status: 200, data: { success: true, data: clone(Array.from(seen.values()).slice(0, 15)) } };
+  }
+
   if (method === 'get' && url.match(/^\/api\/medical-records\/([^/]+)$/)) {
     const id = url.match(/^\/api\/medical-records\/([^/]+)$/)[1];
     const record = s.medicalRecords.find(r => r.id === id);

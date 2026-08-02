@@ -125,6 +125,7 @@ const paths = {
       <path d="M12 6v6l4 2" />
     </>
   ),
+  chevronRight: <path d="m9 18 6-6-6-6" />,
   cross: (
     <path d="M11 2a2 2 0 0 0-2 2v5H4a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h5v5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-5h5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-5V4a2 2 0 0 0-2-2Z" />
   ),

@@ -97,4 +97,41 @@ const getMedicalRecord = async (req, res) => {
   }
 };
 
-module.exports = { createMedicalRecord, getPatientMedicalRecords, getMedicalRecord };
+const getRecentPatients = async (req, res) => {
+  try {
+    const records = await MedicalRecord.findAll({
+      include: [
+        { model: Patient, as: 'patient', attributes: ['id', 'medicalRecordNumber', 'nik', 'name', 'gender'] },
+        { model: User, as: 'doctor', attributes: ['id', 'name'] },
+        { model: Registration, as: 'registration', include: [{ model: Polyclinic, as: 'polyclinic', attributes: ['name'] }] }
+      ],
+      order: [['createdAt', 'DESC']],
+      limit: 100,
+    });
+
+    // Dedupe by patient, keep latest record, count visits
+    const seen = new Map();
+    for (const r of records) {
+      const prev = seen.get(r.patientId);
+      if (prev) {
+        prev.visitCount += 1;
+      } else {
+        seen.set(r.patientId, {
+          patient: r.patient,
+          lastVisit: r.createdAt,
+          lastPolyclinic: r.registration?.polyclinic?.name || null,
+          lastDoctor: r.doctor?.name || null,
+          visitCount: 1,
+        });
+      }
+    }
+
+    const data = Array.from(seen.values()).slice(0, 15);
+    return ApiResponse.success(res, data, 'Recent patients fetched successfully');
+  } catch (error) {
+    console.error('Get recent patients error:', error);
+    return ApiResponse.error(res, 'Failed to fetch recent patients');
+  }
+};
+
+module.exports = { createMedicalRecord, getPatientMedicalRecords, getMedicalRecord, getRecentPatients };

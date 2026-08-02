@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createMedicalRecord, getPatientMedicalRecords, getMedicalRecord } = require('../controllers/medicalRecordController');
+const { createMedicalRecord, getPatientMedicalRecords, getMedicalRecord, getRecentPatients } = require('../controllers/medicalRecordController');
 const { createPrescription, getPrescription } = require('../controllers/prescriptionController');
 const { authenticate, authorize } = require('../middleware/auth');
 const { validate, medicalRecordSchema } = require('../validators');
@@ -8,6 +8,7 @@ const { validate, medicalRecordSchema } = require('../validators');
 router.use(authenticate);
 
 router.post('/', authorize('dokter'), validate(medicalRecordSchema), createMedicalRecord);
+router.get('/recent-patients', getRecentPatients);
 router.get('/:id', getMedicalRecord);
 router.get('/patient/:patientId', getPatientMedicalRecords);
 

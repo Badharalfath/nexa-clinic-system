@@ -109,6 +109,7 @@ export const medicalRecordsAPI = {
   create: (data) => api.post('/medical-records', data),
   getById: (id) => api.get(`/medical-records/${id}`),
   getByPatient: (patientId) => api.get(`/medical-records/patient/${patientId}`),
+  getRecentPatients: () => api.get('/medical-records/recent-patients'),
 };
 
 // Dashboard
