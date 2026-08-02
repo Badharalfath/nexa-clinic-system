@@ -1,173 +1,139 @@
-# 🎬 Video Demo — NEXA Clinic System
-**Durasi target: 8–9 menit (batas maksimal 10 menit)**
-**Resolusi: 1920×1080 (atau 1440p) · Format: MP4**
-**Bahasa narasi: Indonesia**
+# Video Demo — NEXA Clinic System (Demo Aplikasi)
+
+**Durasi target: 8–9 menit (maksimal 10 menit)**
+**Resolusi: 1920×1080 · Format: MP4 · Narasi: Bahasa Indonesia**
+
+> Skrip ini murni demo aplikasi — alur pelayanan end-to-end.
+> Struktur project, cara install, dan dokumentasi API **tidak dibahas**
+> di video karena sudah lengkap di README.
 
 ---
 
-## Ringkasan struktur video
+## Ringkasan scene
 
 | Scene | Topik | Durasi | Kumulatif |
 |---|---|---|---|
-| 1 | Intro & profil | 0:40 | 0:40 |
-| 2 | Arsitektur & struktur project | 0:50 | 1:30 |
-| 3 | Setup & menjalankan aplikasi | 1:00 | 2:30 |
-| 4 | Login & Dashboard (Admin) | 1:30 | 4:00 |
-| 5 | Master Data Pasien + pendaftaran (Petugas) | 1:30 | 5:30 |
-| 6 | Antrean & Panggil Pasien | 1:00 | 6:30 |
-| 7 | Pemeriksaan SOAP + resep (Dokter) | 1:30 | 8:00 |
-| 8 | Riwayat & arsip pasien | 1:00 | 9:00 |
-| 9 | Postman Collection & penutup | 1:00 | 10:00 |
+| 1 | Intro singkat | 0:30 | 0:30 |
+| 2 | Login & Dashboard (Admin) | 1:00 | 1:30 |
+| 3 | Master Data Pasien (validasi NIK) | 1:30 | 3:00 |
+| 4 | Pendaftaran pasien | 1:00 | 4:00 |
+| 5 | Antrean & panggil pasien | 1:00 | 5:00 |
+| 6 | Pemeriksaan SOAP + resep (Dokter) | 2:00 | 7:00 |
+| 7 | Riwayat & arsip pasien | 1:30 | 8:30 |
+| 8 | Penutup singkat | 0:30 | 9:00 |
 
 ---
 
-## Scene 1 — Intro & profil (0:00 – 0:40)
+## Scene 1 — Intro (0:00 – 0:30)
 
-**Aksi layar:** Logo Klinik Sehat (K+ monogram) di tengah layar putih, lalu fade ke teks.
+**Aksi layar:** Tampilkan halaman login aplikasi langsung (tidak perlu logo animasi panjang).
 
 **Narasi:**
-> "Halo, perkenalkan saya [Nama]. Pada video ini saya akan mendemonstrasikan aplikasi *Mini Clinic Information System* — sebuah sistem informasi klinik yang dibangun untuk memenuhi technical test posisi Programmer di NEXA. Aplikasi ini mencakup pendaftaran pasien, manajemen antrean, pemeriksaan dokter dengan metode SOAP, resep obat, hingga riwayat pemeriksaan."
+> "Halo, saya [Nama]. Ini demo aplikasi *Mini Clinic Information System* untuk technical test posisi Programmer NEXA. Saya akan perlihatkan alur pelayanan lengkapnya, mulai dari pendaftaran pasien sampai pemeriksaan dokter."
 
 **Tips:**
-- Jangan bertele-tele. 40 detik sudah cukup untuk perkenalan.
-- Tampilkan teks overlay: nama, posisi yang dilamar, tanggal.
+- Langsung masuk ke aplikasi. Perkenalan cukup 2 kalimat.
+- Teks overlay: nama + posisi yang dilamar.
 
 ---
 
-## Scene 2 — Arsitektur & struktur project (0:40 – 1:30)
+## Scene 2 — Login & Dashboard Admin (0:30 – 1:30)
 
-**Aksi layar:** Tampilkan struktur folder di VS Code (atau `tree` di terminal), zoom ke `backend/src` dan `frontend/src`.
-
-**Narasi:**
-> "Arsitektur aplikasi ini saya pisahkan menjadi dua bagian: backend dan frontend. Backend dibangun dengan Node.js dan Express, menggunakan pola *Model-Controller-Route* dengan Sequelize ORM untuk PostgreSQL. Di sini bisa kita lihat pemisahan yang jelas: folder models, controllers, routes, middleware, validators, dan config. Frontend menggunakan React.js dengan Vite, terstruktur per halaman — ada halaman dashboard, pasien, pendaftaran, antrean, pemeriksaan, dan riwayat."
-
-**Aksi layar:** Sekilas tampilkan `models/index.js` (relasi) lalu `routes/` (daftar endpoint).
+**Aksi layar:** Halaman login, klik kartu akun "Administrator" (form terisi otomatis), klik Masuk.
 
 **Narasi:**
-> "Relasi antar tabel saya definisikan eksplisit di sini: pasien memiliki banyak pendaftaran, satu pendaftaran menghasilkan satu antrean, dan satu pendaftaran maksimal satu pemeriksaan medis."
+> "Ini halaman login. Ada tiga akun demo — administrator, dokter, dan petugas pendaftaran. Kartu akun di samping bisa diklik, username langsung terisi. Sekarang saya masuk sebagai administrator."
+
+**Aksi layar:** Tampilkan dashboard, scroll ringan.
+
+**Narasi:**
+> "Ini dashboard: ringkasan pasien hari ini, jumlah kunjungan, antrean aktif, dan pemeriksaan selesai. Ada juga grafik kunjungan mingguan dan daftar antrean berikutnya."
 
 ---
 
-## Scene 3 — Setup & menjalankan aplikasi (1:30 – 2:30)
+## Scene 3 — Master Data Pasien & Validasi NIK (1:30 – 3:00)
 
-**Aksi layar:** Terminal — tampilkan `.env.example` (blur password), lalu jalankan perintah.
-
-**Narasi:**
-> "Untuk menjalankan aplikasi, pertama kita siapkan file konfigurasi. Contoh konfigurasi sudah saya sediakan di `.env.example` — kita salin menjadi `.env` dan isi kredensial database. Perlu dicatat, file `.env` asli tidak saya commit ke repository, hanya contohnya saja, sesuai ketentuan."
-
-**Aksi layar (terminal):**
-```bash
-cp backend/.env.example backend/.env
-cd backend && npm install
-npm run sync          # migrasi tabel
-npm run dev           # backend di port 5000
-```
-
-**Aksi layar:** Terminal kedua:
-```bash
-cd frontend && npm install && npm run dev   # frontend di port 5174
-```
+**Aksi:** Buka menu "Pasien".
 
 **Narasi:**
-> "Database saya jalankan lewat Docker PostgreSQL, lalu sinkronisasi tabel. Backend berjalan di port 5000, frontend di port 5174. Setelah itu, kita buka aplikasinya."
+> "Di menu pasien terlihat daftar lengkap, lengkap nomor rekam medis otomatis berformat RM-tahunbulan-nomor urut, dan NIK 16 digit."
+
+**Aksi:** Klik "Tambah Pasien", isi form dengan NIK yang benar (16 digit), lalu sengaja coba NIK kurang dari 16 digit.
+
+**Narasi:**
+> "Validasi berjalan di frontend dan backend. Perhatikan: saat NIK kurang dari 16 digit, muncul pesan error langsung di form. Data tidak valid tidak akan tersimpan."
+
+**Aksi:** Perbaiki NIK, simpan pasien baru.
 
 ---
 
-## Scene 4 — Login & Dashboard (2:30 – 4:00)
+## Scene 4 — Pendaftaran Pasien (3:00 – 4:00)
 
-**Aksi layar:** Browser buka `localhost:5174`. Tampilkan halaman login dua kolom.
-
-**Narasi:**
-> "Ini halaman login. Ada tiga akun demo: administrator, dokter, dan petugas pendaftaran. Semua passwordnya *password123*. Ada juga kartu informasi akun demo di sebelah kanan — kita tinggal klik, form terisi otomatis."
-
-**Aksi:** Klik kartu "Admin", klik Masuk.
+**Aksi:** Buka menu "Pendaftaran", klik daftarkan pasien baru (pilih poli, dokter, tulis keluhan, jenis pembayaran), simpan.
 
 **Narasi:**
-> "Kita masuk sebagai Administrator. Ini dashboard dengan ringkasan hari ini: total pasien, jumlah kunjungan, antrean aktif, dan pemeriksaan yang selesai. Ada juga grafik kunjungan mingguan dan daftar antrean berikutnya."
-
-**Aksi layar:** Scroll dashboard, tunjukkan grafik & antrean.
+> "Pasien yang barusan dibuat kita daftarkan untuk kunjungan hari ini. Pilih poliklinik dan dokter, isi keluhan. Begitu disimpan, sistem otomatis membuat nomor antrean dan statusnya 'Menunggu'."
 
 ---
 
-## Scene 5 — Master Data Pasien & Pendaftaran (4:00 – 5:30)
-
-**Aksi:** Buka menu "Pasien" (Master Data Pasien).
-
-**Narasi:**
-> "Di menu pasien kita bisa melihat daftar pasien lengkap dengan nomor rekam medis otomatis berformat RM-tahunbulan-nomor urut, dan NIK yang divalidasi 16 digit."
-
-**Aksi:** Klik "Tambah Pasien", isi form (tunjukkan NIK 16 digit valid, lalu coba NIK salah — muncul error inline).
-
-**Narasi:**
-> "Validasi dilakukan di frontend dan backend. Coba perhatikan: kalau NIK kurang dari 16 digit, muncul pesan error langsung di form. Di sisi backend, validasi juga diperiksa ulang dengan Joi sehingga data tidak valid tetap ditolak."
-
-**Aksi:** Simpan pasien baru, lalu buka menu "Pendaftaran", daftarkan pasien baru tersebut (pilih poli, dokter, keluhan).
-
-**Narasi:**
-> "Setelah data pasien tersimpan, kita daftarkan untuk kunjungan hari ini. Sistem otomatis membuat nomor antrean dan statusnya 'Menunggu'."
-
----
-
-## Scene 6 — Antrean & Panggil Pasien (5:30 – 6:30)
+## Scene 5 — Antrean & Panggil Pasien (4:00 – 5:00)
 
 **Aksi:** Buka menu "Antrean".
 
 **Narasi:**
-> "Di halaman antrean, pasien yang baru kita daftarkan muncul di daftar. Ada kartu 'Sedang Dipanggil' untuk pasien yang aktif, dan tombol 'Panggil Berikutnya' untuk memanggil antrean berikutnya secara eksplisit."
+> "Di halaman antrean, pasien yang baru didaftarkan muncul. Ada tombol 'Panggil Berikutnya' untuk memanggil antrean secara eksplisit."
 
-**Aksi:** Klik tombol "Panggil" pada pasien yang menunggu.
+**Aksi:** Klik panggil pada pasien yang menunggu.
 
 **Narasi:**
-> "Begitu dipanggil, status pasien berubah dari 'Menunggu' menjadi 'Dipanggil'. Status ini sinkron juga dengan data pendaftaran."
+> "Begitu dipanggil, status berubah dari 'Menunggu' menjadi 'Dipanggil', dan status ini sinkron dengan data pendaftaran."
 
 ---
 
-## Scene 7 — Pemeriksaan SOAP & Resep (6:30 – 8:00)
+## Scene 6 — Pemeriksaan SOAP + Resep (Dokter) (5:00 – 7:00)
 
-**Aksi:** Login ulang sebagai "Dokter" (dr.sari) — atau buka tab lain. Buka menu "Pemeriksaan".
+**Aksi:** Logout, login sebagai "Dokter" (dr.sari), buka menu "Pemeriksaan".
 
 **Narasi:**
-> "Sekarang kita masuk sebagai dokter untuk melakukan pemeriksaan. Di panel kiri ada daftar pasien yang sudah dipanggil. Kita pilih pasiennya."
+> "Sekarang saya masuk sebagai dokter untuk memeriksa pasien yang tadi dipanggil. Di panel kiri ada daftar pasien yang siap diperiksa."
 
 **Aksi:** Pilih pasien, isi form SOAP: Subjective (keluhan), Objective (tensi, suhu, berat, tinggi), Assessment (diagnosa), Plan (terapi).
 
 **Narasi:**
-> "Pemeriksaan dicatat dengan metode SOAP: Subjective untuk keluhan pasien, Objective untuk hasil pemeriksaan fisik, Assessment untuk diagnosa, dan Plan untuk rencana terapi. Dokter juga bisa menambahkan tindakan medis beserta biayanya."
+> "Pemeriksaan dicatat dengan metode SOAP: Subjective untuk keluhan, Objective untuk hasil pemeriksaan fisik, Assessment untuk diagnosa, dan Plan untuk rencana terapi."
 
-**Aksi:** Tambahkan tindakan medis, tambahkan resep obat (nama obat, dosis, aturan pakai), klik "Simpan Pemeriksaan Selesai".
+**Aksi:** Tambah tindakan medis + biaya, tambah resep obat (nama obat, dosis, aturan pakai), klik "Simpan Pemeriksaan Selesai".
 
 **Narasi:**
-> "Kita tambahkan tindakan medis dan resep obat. Setelah disimpan, status pemeriksaan otomatis menjadi 'Selesai', dan semua data — termasuk resep — tersimpan ke database."
+> "Dokter juga menambahkan tindakan medis dan resep obat. Setelah disimpan, status pemeriksaan otomatis menjadi 'Selesai' dan semua data tersimpan ke database."
 
 ---
 
-## Scene 8 — Riwayat & Arsip Pasien (8:00 – 9:00)
+## Scene 7 — Riwayat & Arsip Pasien (7:00 – 8:30)
 
 **Aksi:** Buka menu "Riwayat".
 
 **Narasi:**
-> "Di menu riwayat, pasien yang pernah diperiksa tampil otomatis, diurutkan dari kunjungan terbaru. Kita klik salah satu pasien untuk melihat detail pemeriksaan lengkapnya: keluhan, diagnosa, tindakan, dan resep."
+> "Di menu riwayat, pasien yang sudah diperiksa tampil otomatis, diurutkan dari kunjungan terbaru."
 
-**Aksi:** Klik pasien, tunjukkan kartu riwayat lengkap. Lalu kembali ke Pasien, klik ikon hapus.
+**Aksi:** Klik salah satu pasien, tunjukkan detail lengkap (keluhan, diagnosa, tindakan, resep).
 
 **Narasi:**
-> "Satu lagi yang saya bangun: ketika pasien dihapus, muncul dialog konfirmasi yang menghitung data terkait — pendaftaran, pemeriksaan, resep. Default-nya pasien diarsipkan supaya riwayat medis tetap tersimpan. Khusus administrator, ada opsi hapus permanen dengan konfirmasi ketik nama pasien."
+> "Detail pemeriksaan lengkap — mulai keluhan, hasil pemeriksaan, diagnosa, tindakan, sampai resep — semua tersimpan rapi."
 
-**Aksi:** Tampilkan modal arsip (jangan benar-benar menghapus pasien asli — batalkan).
+**Aksi:** Kembali ke menu Pasien, klik hapus pada salah satu pasien (tampilkan modal konfirmasi, lalu batalkan).
+
+**Narasi:**
+> "Satu fitur lagi: saat pasien dihapus, muncul dialog yang menghitung data terkait — pendaftaran, pemeriksaan, resep. Default-nya pasien diarsipkan supaya riwayat medis tetap tersimpan. Hapus permanen hanya bisa dilakukan administrator."
 
 ---
 
-## Scene 9 — Postman & Penutup (9:00 – 10:00)
+## Scene 8 — Penutup (8:30 – 9:00)
 
-**Aksi:** Buka Postman, tampilkan collection 7 folder, buka salah satu request (misal Login atau Daftar Pasien), klik Send, tunjukkan response.
-
-**Narasi:**
-> "Sebagai dokumentasi API, saya menyediakan Postman Collection yang lengkap — mencakup semua endpoint, lengkap dengan environment dan contoh response. Collection ini bisa diimpor dan langsung dicoba. Source code lengkap, file SQL, ERD, dan dokumentasi bisa dilihat di repository GitHub."
-
-**Aksi layar:** Tampilkan repo GitHub (README, commit history) sekilas.
+**Aksi layar:** Tampilkan repo GitHub sekilas (README).
 
 **Narasi:**
-> "Sekian demo aplikasi Mini Clinic Information System ini. Terima kasih atas waktunya, dan saya siap menjawab pertanyaan lebih lanjut."
+> "Source code, file SQL, ERD, dan dokumentasi lengkap ada di repository GitHub. Sekian demo aplikasi *Mini Clinic Information System* ini. Terima kasih atas waktunya, dan saya siap menjawab pertanyaan lebih lanjut."
 
 ---
 
@@ -176,17 +142,18 @@ cd frontend && npm install && npm run dev   # frontend di port 5174
 - [ ] Rekam layar 1080p/1440p (OBS atau QuickTime)
 - [ ] Matikan notifikasi & tab browser lain
 - [ ] Backend + frontend + Postgres **sudah hidup sebelum rekam**
-- [ ] Data demo sudah disiapkan (2-3 pasien dengan riwayat)
+- [ ] Data demo disiapkan: 2-3 pasien + 1 pasien dengan riwayat lengkap
 - [ ] Satu take per scene; potong antar scene (jangan rekam sekali jalan)
 - [ ] Zoom tidak berlebihan (1 zoom per scene cukup)
-- [ ] Jangan tampilkan `.env` asli / password asli (pakai overlay blur)
+- [ ] Jangan tampilkan `.env` asli / password asli
 - [ ] Cek audio: narasi jelas, tanpa noise background
-- [ ] Durasi total ≤ 10:00 (potong scene 9 kalau mepet)
+- [ ] Durasi total ≤ 10:00 (potong scene 7 kalau mepet)
 
 ## Alur cepat pengingat saat rekam
 
 ```
-login admin → dashboard → pasien (tambah, validasi NIK) → pendaftaran
-→ antrean (panggil) → login dokter → pemeriksaan SOAP + resep
-→ riwayat (detail) → arsip dialog → Postman (send) → repo → penutup
+login admin → dashboard → pasien (tambah, validasi NIK)
+→ pendaftaran → antrean (panggil) → login dokter
+→ pemeriksaan SOAP + resep → riwayat (detail) → arsip dialog
+→ repo GitHub → penutup
 ```
