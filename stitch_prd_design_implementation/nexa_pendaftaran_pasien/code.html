@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pendaftaran Pasien — Klinik Sehat</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --surface-2:#f8fafc; --surface-3:#f1f5f9;
+  --border:#e6eaf0; --border-strong:#cdd5e0;
+  --ink:#101828; --ink-2:#344054; --ink-3:#667085; --ink-4:#98a2b3;
+  --primary:#0e9384; --primary-hover:#0c7c6f; --primary-deep:#0b5f56;
+  --primary-soft:#d3f3ee; --primary-mist:#f2fbf9;
+  --accent:#0e7cb5; --accent-soft:#dceef8;
+  --success:#1a7f4b; --success-soft:#e0f5e8;
+  --warning:#a16207; --warning-soft:#fdf1d4;
+  --danger:#c8372f; --danger-soft:#fde7e5;
+  --radius:14px; --radius-sm:10px; --radius-xs:8px;
+  --shadow-sm:0 1px 2px rgba(16,24,40,.04);
+  --font-display:'Plus Jakarta Sans','Inter',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink-2);font-size:14.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--font-display);color:var(--ink);letter-spacing:-.01em}
+svg.icon{display:inline-block;vertical-align:middle;flex-shrink:0}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:250px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:20}
+.brand{display:flex;align-items:center;gap:11px;padding:20px 20px 16px;border-bottom:1px solid var(--border)}
+.brand-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--primary),var(--primary-deep));color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:17px}
+.brand-text strong{display:block;font-family:var(--font-display);font-size:15px;color:var(--ink);line-height:1.2}
+.brand-text small{font-size:11px;color:var(--ink-3);font-weight:500}
+.nav{flex:1;padding:14px 12px;overflow-y:auto}
+.nav-label{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-4);text-transform:uppercase;padding:8px 10px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;color:var(--ink-2);font-weight:600;font-size:13.5px;cursor:pointer;margin-bottom:2px;transition:background .15s,color .15s}
+.nav-item:hover{background:var(--surface-3)}
+.nav-item.active{background:var(--primary-soft);color:var(--primary-deep)}
+.nav-item.active svg{color:var(--primary)}
+.sidebar-user{border-top:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:10px}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--primary-mist);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px}
+.sidebar-user strong{display:block;font-size:12.5px;color:var(--ink);line-height:1.2}
+.sidebar-user small{font-size:11px;color:var(--ink-3)}
+.main{flex:1;margin-left:250px;display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:64px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:10}
+.topbar h1{font-size:17px}
+.page{padding:26px 28px 40px;max-width:1240px;width:100%}
+.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.page-head h2{font-size:21px;font-weight:800}
+.page-head p{font-size:13px;color:var(--ink-3);margin-top:2px}
+.btn{display:inline-flex;align-items:center;gap:7px;border-radius:10px;font-family:var(--font-body);font-weight:700;font-size:13px;padding:10px 16px;cursor:pointer;border:1.5px solid transparent;transition:background .15s,color .15s,border-color .15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-outline{background:var(--surface);border-color:var(--border-strong);color:var(--ink-2)}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary)}
+/* Register form + table split */
+.reg-grid{display:grid;grid-template-columns:400px 1fr;gap:18px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}
+.card h3{font-size:14px;font-weight:800;margin-bottom:16px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 13px;border:1.5px solid var(--border-strong);border-radius:var(--radius-xs);font-family:var(--font-body);font-size:13.5px;color:var(--ink);background:var(--surface);transition:border-color .15s,box-shadow .15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3.5px rgba(14,147,132,.13)}
+.form-group textarea{resize:vertical;min-height:70px}
+.form-row{display:flex;gap:12px}
+.form-row .form-group{flex:1}
+.req{color:var(--danger);margin-left:2px}
+/* Table */
+.table-card{overflow:hidden}
+.table-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+.table-head h3{font-size:14px;font-weight:800;margin:0}
+.table-head .t-sub{font-size:12px;color:var(--ink-3)}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:11px 20px;background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:12px 20px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+td strong{color:var(--ink);font-weight:600}
+td small{color:var(--ink-3);font-size:11.5px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--ink-2);background:var(--bg-subtle,var(--surface-3));padding:2px 7px;border-radius:6px;font-weight:600}
+.badge{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;display:inline-block;letter-spacing:.02em}
+.b-wait{background:var(--surface-3);color:var(--ink-3)}
+.b-blue{background:var(--accent-soft);color:var(--accent)}
+.b-amber{background:var(--warning-soft);color:var(--warning)}
+.b-green{background:var(--success-soft);color:var(--success)}
+.row-actions{display:flex;gap:6px}
+.icon-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink-3);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:color .15s,border-color .15s}
+.icon-btn:hover{color:var(--primary);border-color:var(--primary)}
+.icon-btn.danger:hover{color:var(--danger);border-color:var(--danger)}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">K+</div><div class="brand-text"><strong>KlinikSehat</strong><small>Sistem Informasi Klinik</small></div></div>
+    <nav class="nav">
+      <div class="nav-label">Menu Utama</div>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Pasien</a>
+      <a class="nav-item active"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>Pendaftaran</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/><circle cx="19" cy="18" r="1.5"/></svg>Antrean</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>Pemeriksaan</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Riwayat</a>
+    </nav>
+    <div class="sidebar-user"><div class="avatar">AP</div><div><strong>Ani Petugas</strong><small>Petugas Pendaftaran</small></div></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <h1>Pendaftaran</h1>
+      <button class="btn btn-primary"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Pendaftaran Baru</button>
+    </header>
+
+    <div class="page">
+      <div class="page-head">
+        <div><h2>Pendaftaran Pasien</h2><p>Daftarkan pasien untuk kunjungan hari ini</p></div>
+      </div>
+
+      <div class="reg-grid">
+        <div class="card">
+          <h3>Form Pendaftaran</h3>
+          <div class="form-group">
+            <label>Pasien<span class="req">*</span></label>
+            <input placeholder="Cari nama / NIK / no. RM..." value="Ahmad Sujatmiko — RM-202601-0241"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Dokter<span class="req">*</span></label>
+              <select><option>Dr. Sari Wulandari — Umum</option><option>Dr. Budi Santoso — Gigi</option></select>
+            </div>
+            <div class="form-group">
+              <label>Poli<span class="req">*</span></label>
+              <select><option>Poli Umum</option><option>Poli Gigi</option><option>Poli Anak</option></select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tanggal Kunjungan<span class="req">*</span></label>
+              <input type="date" value="2026-08-01"/>
+            </div>
+            <div class="form-group">
+              <label>Jenis Pembayaran<span class="req">*</span></label>
+              <select><option>Umum</option><option>BPJS</option><option>Asuransi</option></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Keluhan Awal</label>
+            <textarea placeholder="Keluhan yang dirasakan pasien...">Demam dan batuk sejak 2 hari</textarea>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Simpan Registrasi</button>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-head">
+            <div><h3>Terdaftar Hari Ini</h3><div class="t-sub">5 pendaftaran · Sabtu, 1 Agustus 2026</div></div>
+          </div>
+          <table>
+            <thead><tr><th>Waktu</th><th>Pasien</th><th>Poli · Dokter</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody>
+              <tr><td><small>08:02</small></td><td><strong>Ahmad Sujatmiko</strong><br/><span class="mono">RM-202601-0241</span></td><td>Umum · Dr. Budi</td><td><span class="badge b-wait">Menunggu</span></td><td><div class="row-actions"><button class="icon-btn" title="Edit"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="icon-btn danger" title="Hapus"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td></tr>
+              <tr><td><small>08:15</small></td><td><strong>Siti Rahayu</strong><br/><span class="mono">RM-202603-0087</span></td><td>Umum · Dr. Sari</td><td><span class="badge b-blue">Check In</span></td><td><div class="row-actions"><button class="icon-btn" title="Edit"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="icon-btn danger" title="Hapus"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td></tr>
+              <tr><td><small>08:31</small></td><td><strong>Budi Hartono</strong><br/><span class="mono">RM-202604-0119</span></td><td>Gigi · Dr. Budi</td><td><span class="badge b-amber">Pemeriksaan</span></td><td><div class="row-actions"><button class="icon-btn" title="Edit"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="icon-btn danger" title="Hapus"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td></tr>
+              <tr><td><small>08:47</small></td><td><strong>Dewi Lestari</strong><br/><span class="mono">RM-202605-0033</span></td><td>Umum · Dr. Sari</td><td><span class="badge b-green">Selesai</span></td><td><div class="row-actions"><button class="icon-btn" title="Edit"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="icon-btn danger" title="Hapus"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td></tr>
+              <tr><td><small>09:05</small></td><td><strong>Rina Marlina</strong><br/><span class="mono">RM-202606-0056</span></td><td>Anak · Dr. Sari</td><td><span class="badge b-wait">Menunggu</span></td><td><div class="row-actions"><button class="icon-btn" title="Edit"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="icon-btn danger" title="Hapus"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

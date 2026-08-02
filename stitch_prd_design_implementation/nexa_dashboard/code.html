@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard — Klinik Sehat</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --surface-2:#f8fafc; --surface-3:#f1f5f9;
+  --border:#e6eaf0; --border-strong:#cdd5e0;
+  --ink:#101828; --ink-2:#344054; --ink-3:#667085; --ink-4:#98a2b3;
+  --primary:#0e9384; --primary-hover:#0c7c6f; --primary-deep:#0b5f56;
+  --primary-soft:#d3f3ee; --primary-mist:#f2fbf9;
+  --accent:#0e7cb5; --accent-soft:#dceef8;
+  --success:#1a7f4b; --success-soft:#e0f5e8;
+  --warning:#a16207; --warning-soft:#fdf1d4;
+  --danger:#c8372f; --danger-soft:#fde7e5;
+  --radius:14px; --radius-sm:10px; --radius-xs:8px;
+  --shadow-sm:0 1px 2px rgba(16,24,40,.04);
+  --font-display:'Plus Jakarta Sans','Inter',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink-2);font-size:14.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--font-display);color:var(--ink);letter-spacing:-.01em}
+svg.icon{display:inline-block;vertical-align:middle;flex-shrink:0}
+.layout{display:flex;min-height:100vh}
+/* Sidebar */
+.sidebar{width:250px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:20}
+.brand{display:flex;align-items:center;gap:11px;padding:20px 20px 16px;border-bottom:1px solid var(--border)}
+.brand-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--primary),var(--primary-deep));color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:17px;box-shadow:0 2px 8px rgba(14,147,132,.25)}
+.brand-text strong{display:block;font-family:var(--font-display);font-size:15px;color:var(--ink);line-height:1.2}
+.brand-text small{font-size:11px;color:var(--ink-3);font-weight:500}
+.nav{flex:1;padding:14px 12px;overflow-y:auto}
+.nav-label{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-4);text-transform:uppercase;padding:8px 10px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;color:var(--ink-2);font-weight:600;font-size:13.5px;cursor:pointer;margin-bottom:2px;transition:background .15s,color .15s}
+.nav-item:hover{background:var(--surface-3)}
+.nav-item.active{background:var(--primary-soft);color:var(--primary-deep)}
+.nav-item.active svg{color:var(--primary)}
+.sidebar-user{border-top:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:10px}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--primary-mist);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px}
+.sidebar-user strong{display:block;font-size:12.5px;color:var(--ink);line-height:1.2}
+.sidebar-user small{font-size:11px;color:var(--ink-3)}
+/* Main */
+.main{flex:1;margin-left:250px;display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:64px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:10}
+.topbar h1{font-size:17px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.search-top{display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:10px;padding:7px 13px;width:260px;color:var(--ink-4);font-size:13px}
+.page{padding:26px 28px 40px;max-width:1200px;width:100%}
+.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.page-head h2{font-size:21px;font-weight:800}
+.page-head p{font-size:13px;color:var(--ink-3);margin-top:2px}
+/* Stat cards */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm)}
+.stat-card .stat-label{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3)}
+.stat-card .stat-value{font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--ink);margin-top:4px;line-height:1.2}
+.stat-card .stat-foot{font-size:11.5px;color:var(--ink-4);margin-top:3px}
+.stat-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.t-teal{background:var(--primary-soft);color:var(--primary)}
+.t-blue{background:var(--accent-soft);color:var(--accent)}
+.t-amber{background:var(--warning-soft);color:var(--warning)}
+.t-green{background:var(--success-soft);color:var(--success)}
+.t-slate{background:var(--surface-3);color:var(--ink-3)}
+/* Grid bottom */
+.grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}
+.card h3{font-size:14px;font-weight:800;margin-bottom:4px}
+.card .card-sub{font-size:12px;color:var(--ink-3);margin-bottom:16px}
+/* Bar chart */
+.chart{display:flex;align-items:flex-end;gap:14px;height:170px;padding-top:8px}
+.chart-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end}
+.chart-bar{width:100%;max-width:38px;border-radius:6px 6px 3px 3px;background:var(--primary-soft)}
+.chart-bar span{display:block;font-size:10.5px;font-weight:700;color:var(--primary-deep);text-align:center;padding-top:4px}
+.chart-col small{font-size:11px;color:var(--ink-3);font-weight:600}
+/* Quick actions */
+.quick-actions{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+.qa-btn{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--ink-2);transition:border-color .15s,background .15s}
+.qa-btn:hover{border-color:var(--primary);background:var(--primary-mist)}
+.qa-btn svg{color:var(--primary)}
+/* Next queue rows */
+.queue-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);font-size:13px}
+.queue-row:last-child{border-bottom:none;padding-bottom:0}
+.queue-num{font-family:var(--font-display);font-weight:800;color:var(--primary-deep);background:var(--primary-soft);border-radius:8px;padding:4px 9px;font-size:12.5px;min-width:52px;text-align:center}
+.queue-row .q-info{flex:1;min-width:0}
+.queue-row .q-info strong{display:block;color:var(--ink);font-size:13px}
+.queue-row .q-info small{color:var(--ink-3);font-size:11.5px}
+.badge{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;display:inline-block;letter-spacing:.02em}
+.b-wait{background:var(--surface-3);color:var(--ink-3)}
+.b-blue{background:var(--accent-soft);color:var(--accent)}
+.b-amber{background:var(--warning-soft);color:var(--warning)}
+.b-green{background:var(--success-soft);color:var(--success)}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">K+</div>
+      <div class="brand-text"><strong>KlinikSehat</strong><small>Sistem Informasi Klinik</small></div>
+    </div>
+    <nav class="nav">
+      <div class="nav-label">Menu Utama</div>
+      <a class="nav-item active"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Pasien</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>Pendaftaran</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/><circle cx="19" cy="18" r="1.5"/></svg>Antrean</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>Pemeriksaan</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Riwayat</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar">AD</div>
+      <div><strong>Administrator</strong><small>Admin</small></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <h1>Dashboard</h1>
+      <div class="topbar-right">
+        <div class="search-top"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Cari pasien, NIK, atau RM...</div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-head">
+        <div><h2>Ringkasan Hari Ini</h2><p>Sabtu, 1 Agustus 2026</p></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card"><div class="stat-icon t-teal"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="stat-label">Total Pasien</div><div class="stat-value">1.248</div><div class="stat-foot">terdaftar di sistem</div></div>
+        <div class="stat-card"><div class="stat-icon t-blue"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg></div><div class="stat-label">Hari Ini</div><div class="stat-value">42</div><div class="stat-foot">kunjungan hari ini</div></div>
+        <div class="stat-card"><div class="stat-icon t-amber"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/><circle cx="19" cy="18" r="1.5"/></svg></div><div class="stat-label">Antrean</div><div class="stat-value">18</div><div class="stat-foot">aktif di poli</div></div>
+        <div class="stat-card"><div class="stat-icon t-slate"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div class="stat-label">Menunggu</div><div class="stat-value">5</div><div class="stat-foot">belum dipanggil</div></div>
+        <div class="stat-card"><div class="stat-icon t-green"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></div><div class="stat-label">Selesai</div><div class="stat-value">12</div><div class="stat-foot">pemeriksaan selesai</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Kunjungan Pasien Minggu Ini</h3>
+          <div class="card-sub">Jumlah pasien yang berkunjung per hari</div>
+          <div class="chart">
+            <div class="chart-col"><div class="chart-bar" style="height:38%"><span>21</span></div><small>Sen</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height:52%"><span>29</span></div><small>Sel</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height:45%"><span>25</span></div><small>Rab</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height:66%"><span>37</span></div><small>Kam</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height:58%"><span>32</span></div><small>Jum</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height:78%"><span>42</span></div><small>Sab</small></div>
+            <div class="chart-col"><div class="chart-bar" style="height:24%"><span>—</span></div><small>Min</small></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card" style="margin-bottom:18px">
+            <h3>Aksi Cepat</h3>
+            <div class="card-sub">Kegiatan yang sering dilakukan</div>
+            <div class="quick-actions">
+              <button class="qa-btn"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Register Pasien Baru</button>
+              <button class="qa-btn"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>Panggil Antrean Berikutnya</button>
+              <button class="qa-btn"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Catat Pemeriksaan</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Antrean Berikutnya</h3>
+            <div class="card-sub">3 antrean menunggu giliran</div>
+            <div class="queue-row"><span class="queue-num">A024</span><div class="q-info"><strong>Ahmad Sujatmiko</strong><small>Poli Umum · Dr. Budi</small></div><span class="badge b-wait">Menunggu</span></div>
+            <div class="queue-row"><span class="queue-num">A025</span><div class="q-info"><strong>Siti Rahayu</strong><small>Poli Umum · Dr. Sari</small></div><span class="badge b-wait">Menunggu</span></div>
+            <div class="queue-row"><span class="queue-num">B012</span><div class="q-info"><strong>Budi Hartono</strong><small>Poli Gigi · Dr. Budi</small></div><span class="badge b-amber">Dipanggil</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

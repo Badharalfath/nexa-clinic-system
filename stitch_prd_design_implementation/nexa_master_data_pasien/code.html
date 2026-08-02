@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Data Pasien — Klinik Sehat</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --surface-2:#f8fafc; --surface-3:#f1f5f9;
+  --border:#e6eaf0; --border-strong:#cdd5e0;
+  --ink:#101828; --ink-2:#344054; --ink-3:#667085; --ink-4:#98a2b3;
+  --primary:#0e9384; --primary-hover:#0c7c6f; --primary-deep:#0b5f56;
+  --primary-soft:#d3f3ee; --primary-mist:#f2fbf9;
+  --accent:#0e7cb5; --accent-soft:#dceef8;
+  --success:#1a7f4b; --success-soft:#e0f5e8;
+  --warning:#a16207; --warning-soft:#fdf1d4;
+  --danger:#c8372f; --danger-soft:#fde7e5;
+  --radius:14px; --radius-sm:10px; --radius-xs:8px;
+  --shadow-sm:0 1px 2px rgba(16,24,40,.04);
+  --shadow-lg:0 12px 40px rgba(16,24,40,.16);
+  --font-display:'Plus Jakarta Sans','Inter',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink-2);font-size:14.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--font-display);color:var(--ink);letter-spacing:-.01em}
+svg.icon{display:inline-block;vertical-align:middle;flex-shrink:0}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:250px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:20}
+.brand{display:flex;align-items:center;gap:11px;padding:20px 20px 16px;border-bottom:1px solid var(--border)}
+.brand-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--primary),var(--primary-deep));color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:17px}
+.brand-text strong{display:block;font-family:var(--font-display);font-size:15px;color:var(--ink);line-height:1.2}
+.brand-text small{font-size:11px;color:var(--ink-3);font-weight:500}
+.nav{flex:1;padding:14px 12px;overflow-y:auto}
+.nav-label{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-4);text-transform:uppercase;padding:8px 10px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;color:var(--ink-2);font-weight:600;font-size:13.5px;cursor:pointer;margin-bottom:2px;transition:background .15s,color .15s}
+.nav-item:hover{background:var(--surface-3)}
+.nav-item.active{background:var(--primary-soft);color:var(--primary-deep)}
+.nav-item.active svg{color:var(--primary)}
+.sidebar-user{border-top:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:10px}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--primary-mist);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px}
+.sidebar-user strong{display:block;font-size:12.5px;color:var(--ink);line-height:1.2}
+.sidebar-user small{font-size:11px;color:var(--ink-3)}
+.main{flex:1;margin-left:250px;display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:64px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:10}
+.topbar h1{font-size:17px}
+.page{padding:26px 28px 40px;max-width:1240px;width:100%}
+.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.page-head h2{font-size:21px;font-weight:800}
+.page-head p{font-size:13px;color:var(--ink-3);margin-top:2px}
+.page-actions{display:flex;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:7px;border-radius:10px;font-family:var(--font-body);font-weight:700;font-size:13px;padding:10px 16px;cursor:pointer;border:1.5px solid transparent;transition:background .15s,color .15s,border-color .15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-outline{background:var(--surface);border-color:var(--border-strong);color:var(--ink-2)}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary)}
+/* Toolbar */
+.toolbar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.search-box{flex:1;max-width:420px;display:flex;align-items:center;gap:9px;background:var(--surface);border:1.5px solid var(--border-strong);border-radius:10px;padding:9px 14px;color:var(--ink-4);font-size:13px;transition:border-color .15s,box-shadow .15s}
+.search-box:focus-within{border-color:var(--primary);box-shadow:0 0 0 3.5px rgba(14,147,132,.13)}
+.search-box input{border:none;outline:none;flex:1;font-family:var(--font-body);font-size:13.5px;color:var(--ink);background:transparent}
+.search-box input::placeholder{color:var(--ink-4)}
+/* Table */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:12px 20px;background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:13px 20px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--primary-mist)}
+td strong{color:var(--ink);font-weight:600}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--ink-2);background:var(--surface-3);padding:2px 7px;border-radius:6px;font-weight:600}
+.gender{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;font-size:11px;font-weight:800}
+.g-l{background:var(--accent-soft);color:var(--accent)}
+.g-p{background:var(--purple-soft,var(--primary-soft));color:var(--primary-deep)}
+.row-actions{display:flex;gap:6px}
+.icon-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink-3);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:color .15s,border-color .15s,background .15s}
+.icon-btn:hover{color:var(--primary);border-color:var(--primary);background:var(--primary-mist)}
+.icon-btn.danger:hover{color:var(--danger);border-color:var(--danger);background:var(--danger-soft)}
+/* Pagination */
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;border-top:1px solid var(--border);font-size:12.5px;color:var(--ink-3)}
+.pg-btns{display:flex;gap:6px}
+.pg-btn{min-width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink-2);font-family:var(--font-body);font-weight:700;font-size:12.5px;cursor:pointer}
+.pg-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+/* Modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(16,24,40,.45);display:flex;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(2px)}
+.modal{width:520px;max-width:calc(100vw - 40px);background:var(--surface);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)}
+.modal-head h3{font-size:15.5px;font-weight:800}
+.modal-body{padding:20px 22px}
+.modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:16px 22px;border-top:1px solid var(--border);background:var(--surface-2)}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 13px;border:1.5px solid var(--border-strong);border-radius:var(--radius-xs);font-family:var(--font-body);font-size:13.5px;color:var(--ink);background:var(--surface);transition:border-color .15s,box-shadow .15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3.5px rgba(14,147,132,.13)}
+.form-group textarea{resize:vertical;min-height:64px}
+.form-row{display:flex;gap:12px}
+.form-row .form-group{flex:1}
+.input-mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.req{color:var(--danger);margin-left:2px}
+.hint{font-size:11px;color:var(--ink-4);margin-top:4px;display:block}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">K+</div><div class="brand-text"><strong>KlinikSehat</strong><small>Sistem Informasi Klinik</small></div></div>
+    <nav class="nav">
+      <div class="nav-label">Menu Utama</div>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+      <a class="nav-item active"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Pasien</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>Pendaftaran</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/><circle cx="19" cy="18" r="1.5"/></svg>Antrean</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>Pemeriksaan</a>
+      <a class="nav-item"><svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Riwayat</a>
+    </nav>
+    <div class="sidebar-user"><div class="avatar">AD</div><div><strong>Administrator</strong><small>Admin</small></div></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <h1>Data Pasien</h1>
+    </header>
+
+    <div class="page">
+      <div class="page-head">
+        <div><h2>Master Data Pasien</h2><p>Kelola data pasien terdaftar di klinik</p></div>
+        <div class="page-actions">
+          <button class="btn btn-outline"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Export</button>
+          <button class="btn btn-primary"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Tambah Pasien</button>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-box">
+          <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input placeholder="Cari No. RM, NIK, atau nama..."/>
+        </div>
+        <button class="btn btn-outline" style="padding:9px 14px;font-size:12.5px"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54Z"/></svg>Filter</button>
+        <button class="btn btn-outline" style="padding:9px 14px;font-size:12.5px"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/></svg>Urutkan</button>
+      </div>
+
+      <div class="card">
+        <table>
+          <thead><tr><th>No. RM</th><th>NIK</th><th>Nama Lengkap</th><th>L/P</th><th>Tanggal Lahir</th><th>Telepon</th><th>Aksi</th></tr></thead>
+          <tbody>
+            <tr><td><span class="mono">RM-202601-0241</span></td><td><span class="mono">3201234509870001</span></td><td><strong>Ahmad Sujatmiko</strong></td><td><span class="gender g-l">L</span></td><td>12/03/1990</td><td>081234567890</td><td><div class="row-actions"><button class="icon-btn" title="Lihat detail"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="icon-btn" title="Ubah"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="icon-btn danger" title="Hapus"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td></tr>
+            <tr><td><span class="mono">RM-202603-0087</span></td><td><span class="mono">3201234509870002</span></td><td><strong>Siti Rahayu</strong></td><td><span class="gender g-p">P</span></td><td>12/03/1994</td><td>081298765432</td><td><div class="row-actions"><button class="icon-btn" title="Lihat detail"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="icon-btn" title="Ubah"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="icon-btn danger" title="Hapus"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td></tr>
+            <tr><td><span class="mono">RM-202604-0119</span></td><td><span class="mono">3201234509870003</span></td><td><strong>Budi Hartono</strong></td><td><span class="gender g-l">L</span></td><td>05/07/1985</td><td>081356789012</td><td><div class="row-actions"><button class="icon-btn" title="Lihat detail"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="icon-btn" title="Ubah"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="icon-btn danger" title="Hapus"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td></tr>
+            <tr><td><span class="mono">RM-202605-0033</span></td><td><span class="mono">3201234509870004</span></td><td><strong>Dewi Lestari</strong></td><td><span class="gender g-p">P</span></td><td>23/11/1998</td><td>081276543210</td><td><div class="row-actions"><button class="icon-btn" title="Lihat detail"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="icon-btn" title="Ubah"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="icon-btn danger" title="Hapus"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td></tr>
+            <tr><td><span class="mono">RM-202606-0056</span></td><td><span class="mono">3201234509870005</span></td><td><strong>Rina Marlina</strong></td><td><span class="gender g-p">P</span></td><td>30/01/2001</td><td>081234001122</td><td><div class="row-actions"><button class="icon-btn" title="Lihat detail"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="icon-btn" title="Ubah"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="icon-btn danger" title="Hapus"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td></tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <span>Menampilkan 1–5 dari 1.248 pasien</span>
+          <div class="pg-btns"><button class="pg-btn">‹</button><button class="pg-btn active">1</button><button class="pg-btn">2</button><button class="pg-btn">3</button><button class="pg-btn">4</button><button class="pg-btn">›</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal Tambah Pasien -->
+<div class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Tambah Pasien Baru</h3>
+      <button class="icon-btn" title="Tutup"><svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nomor Rekam Medis</label>
+        <input class="input-mono" value="RM-202608-0057" disabled/>
+        <span class="hint">Dibuat otomatis oleh sistem</span>
+      </div>
+      <div class="form-group">
+        <label>NIK (16 digit)<span class="req">*</span></label>
+        <input class="input-mono" placeholder="3201234509870006"/>
+      </div>
+      <div class="form-group">
+        <label>Nama Lengkap Sesuai KTP<span class="req">*</span></label>
+        <input placeholder="Nama lengkap pasien"/>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Jenis Kelamin<span class="req">*</span></label>
+          <select><option>Laki-laki</option><option>Perempuan</option></select>
+        </div>
+        <div class="form-group">
+          <label>Tanggal Lahir<span class="req">*</span></label>
+          <input type="date" value="1995-05-05"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Nomor Telepon / WhatsApp</label>
+        <input placeholder="08xxxxxxxxxx"/>
+      </div>
+      <div class="form-group">
+        <label>Alamat Domisili</label>
+        <textarea placeholder="Alamat lengkap pasien..."></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline">Batal</button>
+      <button class="btn btn-primary"><svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Simpan Data Pasien</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
