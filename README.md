@@ -1,68 +1,69 @@
-# NEXA Clinic System — Mini Clinic Information System
+# NEXA Clinic System — Sistem Informasi Klinik Mini
 
-A full-stack mini clinic information system built as a technical take-home test.
-It manages the complete patient flow: **registration → queue → medical check-up
-(SOAP) → medical actions & prescriptions**, with role-based access control
-(administrator, doctor, registration officer), REST API, and a relational
-PostgreSQL database.
+Sistem informasi klinik mini (full-stack) yang dibuat sebagai tugas technical test.
+Aplikasi ini mengelola alur pelayanan pasien secara lengkap:
+**pendaftaran → antrean → pemeriksaan (SOAP) → tindakan & resep**,
+dengan kontrol akses berdasarkan peran (administrator, dokter, petugas pendaftaran),
+REST API, dan database PostgreSQL.
 
 ![ERD](docs/ERD.png)
 
 ---
 
-## Tech Stack
+## Teknologi yang Digunakan
 
-| Layer | Technology |
+| Lapisan | Teknologi |
 |---|---|
-| **Frontend** | React 19, Vite 8, React Router 7, Axios, custom SVG icon system |
+| **Frontend** | React 19, Vite 8, React Router 7, Axios, sistem ikon SVG sendiri |
 | **Backend** | Node.js, Express 5, Sequelize 6 (ORM), PostgreSQL |
-| **Security** | JWT (8h expiry), bcryptjs password hashing, Helmet, CORS |
-| **Validation** | Joi schemas on backend; NIK 16-digit + required-field checks on frontend |
-| **Tools** | Postman collection, Git (incremental commits), ERD + Mermaid docs |
+| **Keamanan** | JWT (masa berlaku 8 jam), bcryptjs untuk hashing password, Helmet, CORS |
+| **Validasi** | Joi di sisi backend; NIK 16 digit + cek kolom wajib di sisi frontend |
+| **Lainnya** | Postman collection, Git (commit bertahap), ERD |
 
 ---
 
-## Features
+## Fitur Utama
 
-- **Role-based login** — one endpoint, server decides role:
+- **Login berbasis peran** — satu endpoint login, sistem yang menentukan peran:
   `administrator`, `dokter`, `petugas_pendaftaran`
-- **Patient management** — CRUD, NIK validated as exactly 16 digits,
-  medical record number auto-generated (`RM-YYYYMM-XXXX`)
-- **Registration & Queue** — registration with complaint & payment type,
-  queue numbers (`U001`/`G001`), statuses `menunggu → dipanggil → pemeriksaan → selesai`
-- **Medical check-up (SOAP)** — Subjective, Objective (blood pressure,
-  temperature, weight, height), Assessment, Plan
-- **Medical actions & prescriptions** — attached to each medical record
-- **Archive / soft delete** — patients are archived by default (clinical data
-  never lost, per health-record retention rules); permanent delete is
-  administrator-only with cascade transaction
-- **Recent patients** — doctor dashboard shows last-examined patients
-- **Responsive UI** — sidebar rail + drawer, works on desktop & mobile
+- **Pengelolaan pasien** — tambah, ubah, lihat, hapus; NIK divalidasi harus
+  tepat 16 digit; nomor rekam medis dibuat otomatis (`RM-YYYYMM-XXXX`)
+- **Pendaftaran & antrean** — pendaftaran dengan keluhan dan jenis pembayaran,
+  nomor antrean (`U001`/`G001`), status `menunggu → dipanggil → pemeriksaan → selesai`
+- **Pemeriksaan (SOAP)** — Subjective, Objective (tekanan darah, suhu, berat
+  badan, tinggi badan), Assessment, Plan
+- **Tindakan & resep** — tercatat pada setiap pemeriksaan
+- **Arsip / hapus lunak** — pasien diarsipkan secara default (data klinis tidak
+  pernah hilang, sesuai aturan penyimpanan rekam medis); hapus permanen hanya
+  untuk administrator dengan transaksi berantai (cascade)
+- **Pasien terakhir diperiksa** — dashboard dokter menampilkan pasien yang baru
+  saja diperiksa
+- **Tampilan responsif** — sidebar rail + drawer, nyaman di desktop maupun HP
 
 ---
 
-## Project Structure
+## Struktur Project
 
 ```
 nexa-clinic-system/
 ├── backend/
 │   ├── src/
-│   │   ├── config/         # DB & env config
-│   │   ├── controllers/    # route handlers
-│   │   ├── middleware/     # auth, role, error handling
-│   │   ├── models/         # Sequelize models (8 tables)
-│   │   ├── routes/         # REST API routes
-│   │   ├── seeders/        # demo data (users, patients, etc.)
-│   │   ├── utils/          # API response helpers
-│   │   └── validators/     # Joi validation schemas
+│   │   ├── config/         # konfigurasi database & env
+│   │   ├── controllers/    # penangan permintaan (route handler)
+│   │   ├── middleware/     # autentikasi, peran, penanganan error
+│   │   ├── models/         # model Sequelize (8 tabel)
+│   │   ├── routes/         # rute REST API
+│   │   ├── seeders/        # data contoh (users, patients, dll.)
+│   │   ├── utils/          # helper respons API
+│   │   └── validators/     # skema validasi Joi
 │   ├── database/
-│   │   └── schema.sql      # full PostgreSQL schema
+│   │   └── schema.sql      # skema lengkap PostgreSQL
 │   ├── .env.example
 │   └── package.json
 ├── frontend/
 │   ├── src/
-│   │   ├── api/            # axios client
-│   │   ├── components/     # shared UI (Icon.jsx, Sidebar, ...)
+│   │   ├── api/            # klien axios
+│   │   ├── components/     # komponen bersama (Icon.jsx, Sidebar, dll.)
 │   │   ├── context/        # AuthContext
 │   │   ├── pages/          # Auth, Dashboard, Patients, Registrations,
 │   │   │                   # Queues, MedicalRecords, MasterData
@@ -71,40 +72,40 @@ nexa-clinic-system/
 │   └── package.json
 ├── docs/
 │   └── ERD.png             # Entity Relationship Diagram
-├── postman/                # Postman collection + environment
+├── postman/                # collection & environment Postman
 └── prd/                    # Product Requirements Document
 ```
 
 ---
 
-## Database Schema (8 tables)
+## Struktur Database (8 tabel)
 
 `USERS`, `PATIENTS`, `POLYCLINICS`, `REGISTRATIONS`, `QUEUES`,
 `MEDICAL_RECORDS`, `MEDICAL_ACTIONS`, `PRESCRIPTIONS`
 
-- Relationships enforced with foreign keys + `ON DELETE CASCADE`
-- `registrations → queues` and `registrations → medical_records` are 1:1
-  (unique FK per registration)
-- Full DDL in [`backend/database/schema.sql`](backend/database/schema.sql)
+- Relasi antar tabel dijamin dengan foreign key dan `ON DELETE CASCADE`
+- `registrations → queues` dan `registrations → medical_records` bersifat 1:1
+  (foreign key unik per pendaftaran)
+- Skema lengkap ada di [`backend/database/schema.sql`](backend/database/schema.sql)
 
 ---
 
-## Getting Started
+## Cara Menjalankan
 
-### Prerequisites
+### Kebutuhan
 
-- Node.js ≥ 18
-- PostgreSQL ≥ 14 (local, or Docker container)
+- Node.js versi 18 ke atas
+- PostgreSQL versi 14 ke atas (lokal, atau pakai Docker)
 - npm
 
 ### 1. Database
 
 ```bash
-# Option A — run schema directly
+# Cara A — jalankan skema langsung
 psql -U postgres -c "CREATE DATABASE clinic_system;"
 psql -U postgres -d clinic_system -f backend/database/schema.sql
 
-# Option B — Docker
+# Cara B — pakai Docker
 docker run -d --name nexa-postgres -p 5432:5432 \
   -e POSTGRES_DB=clinic_system -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=your_password postgres:16
@@ -114,10 +115,10 @@ docker run -d --name nexa-postgres -p 5432:5432 \
 
 ```bash
 cd backend
-cp .env.example .env        # then edit DB_PASSWORD + JWT_SECRET
+cp .env.example .env        # lalu ubah DB_PASSWORD dan JWT_SECRET
 npm install
-npm run sync:force          # creates tables + seeds demo data
-npm run dev                 # http://localhost:5000
+npm run sync:force          # membuat tabel + mengisi data contoh
+npm run dev                 # server jalan di http://localhost:5000
 ```
 
 ### 3. Frontend
@@ -126,85 +127,86 @@ npm run dev                 # http://localhost:5000
 cd frontend
 cp .env.example .env        # VITE_API_URL=http://localhost:5000/api
 npm install
-npm run dev                 # http://localhost:5174
+npm run dev                 # buka http://localhost:5174
 ```
 
-Open **http://localhost:5174** in your browser.
+Setelah itu buka **http://localhost:5174** di browser.
 
 ---
 
-## Demo Accounts
+## Akun Demo
 
-| Role | Username |
+| Peran | Username |
 |---|---|
 | Administrator | `admin` |
-| Doctor | `dr.sari`, `dr.budi` |
-| Registration officer | `petugas1` |
+| Dokter | `dr.sari`, `dr.budi` |
+| Petugas pendaftaran | `petugas1` |
 
-All demo accounts share the same demo password (see `backend/src/seeders/seed.js`).
-The login page also provides click-to-fill demo account cards.
+Semua akun demo memakai password yang sama (lihat `backend/src/seeders/seed.js`).
+Halaman login juga menyediakan tombol akun demo yang bisa diklik untuk mengisi
+username otomatis.
 
 ---
 
-## REST API Overview
+## Daftar REST API
 
 Base URL: `http://localhost:5000/api`
 
-| Method | Endpoint | Description | Access |
+| Method | Endpoint | Keterangan | Akses |
 |---|---|---|---|
-| POST | `/auth/login` | Login, returns JWT | Public |
-| POST | `/auth/logout` | Logout | Authenticated |
-| GET | `/auth/me` | Current user profile | Authenticated |
-| GET | `/dashboard` | Dashboard stats | Authenticated |
-| GET | `/referensi/doctors` | Doctor list | Authenticated |
-| GET | `/referensi/polyclinics` | Polyclinic list | Authenticated |
-| GET | `/patients` | List patients (paginated) | Authenticated |
-| GET | `/patients/:id` | Patient detail | Authenticated |
-| GET | `/patients/:id/related-counts` | Related records count | Authenticated |
-| POST | `/patients` | Create patient | admin / officer |
-| PUT | `/patients/:id` | Update patient | admin / officer |
-| DELETE | `/patients/:id` | Archive patient (soft delete) | Administrator |
-| DELETE | `/patients/:id/permanent` | Permanently delete (cascade) | Administrator |
-| GET | `/registrations` | List registrations | Authenticated |
-| POST | `/registrations` | Create registration | admin / officer |
-| PUT | `/registrations/:id` | Update registration | admin / officer |
-| GET | `/queues` | List queues | Authenticated |
-| PUT | `/queues/:id/call` | Call next patient | Authenticated |
-| PUT | `/queues/:id/status` | Update queue status | Authenticated |
-| GET | `/medical-records/recent-patients` | Recently examined patients | Authenticated |
-| GET | `/medical-records/:id` | Medical record detail | Authenticated |
-| GET | `/medical-records/patient/:patientId` | Patient history | Authenticated |
-| POST | `/medical-records` | Create SOAP record | Doctor |
-| POST | `/medical-records/:id/prescriptions` | Add prescription | Doctor |
-| GET | `/medical-records/prescriptions/:id` | Prescription detail | Authenticated |
+| POST | `/auth/login` | Login, mengembalikan JWT | Publik |
+| POST | `/auth/logout` | Logout | Sudah login |
+| GET | `/auth/me` | Profil pengguna yang login | Sudah login |
+| GET | `/dashboard` | Statistik dashboard | Sudah login |
+| GET | `/referensi/doctors` | Daftar dokter | Sudah login |
+| GET | `/referensi/polyclinics` | Daftar poliklinik | Sudah login |
+| GET | `/patients` | Daftar pasien (dengan paginasi) | Sudah login |
+| GET | `/patients/:id` | Detail pasien | Sudah login |
+| GET | `/patients/:id/related-counts` | Jumlah data terkait pasien | Sudah login |
+| POST | `/patients` | Tambah pasien | admin / petugas |
+| PUT | `/patients/:id` | Ubah pasien | admin / petugas |
+| DELETE | `/patients/:id` | Arsipkan pasien (hapus lunak) | Administrator |
+| DELETE | `/patients/:id/permanent` | Hapus permanen (cascade) | Administrator |
+| GET | `/registrations` | Daftar pendaftaran | Sudah login |
+| POST | `/registrations` | Buat pendaftaran | admin / petugas |
+| PUT | `/registrations/:id` | Ubah pendaftaran | admin / petugas |
+| GET | `/queues` | Daftar antrean | Sudah login |
+| PUT | `/queues/:id/call` | Panggil antrean berikutnya | Sudah login |
+| PUT | `/queues/:id/status` | Ubah status antrean | Sudah login |
+| GET | `/medical-records/recent-patients` | Pasien terakhir diperiksa | Sudah login |
+| GET | `/medical-records/:id` | Detail pemeriksaan | Sudah login |
+| GET | `/medical-records/patient/:patientId` | Riwayat pasien | Sudah login |
+| POST | `/medical-records` | Buat catatan SOAP | Dokter |
+| POST | `/medical-records/:id/prescriptions` | Tambah resep | Dokter |
+| GET | `/medical-records/prescriptions/:id` | Detail resep | Sudah login |
 
-All protected endpoints require header: `Authorization: Bearer <token>`.
+Semua endpoint yang dilindungi memerlukan header: `Authorization: Bearer <token>`.
 
 ---
 
-## API Documentation (Postman)
+## Dokumentasi API (Postman)
 
-A ready-to-import collection is provided in [`postman/`](postman/):
+Collection siap import tersedia di folder [`postman/`](postman/):
 
-- `NEXA Clinic System API.postman_collection.json` — 23 requests across
-  7 folders, with auto-token script (login sets `token` in environment
-  and collection variables)
+- `NEXA Clinic System API.postman_collection.json` — 23 request dalam
+  7 folder, lengkap dengan script auto-token (login otomatis mengisi `token`
+  di environment dan collection variables)
 - Environment: `baseUrl = http://localhost:5000/api`
 
-Import both files in Postman → set active environment → run **Login** →
-`token` is populated automatically → all other requests work.
+Cara pakai: import kedua file di Postman → aktifkan environment → jalankan
+request **Login** → `token` terisi otomatis → semua request lain langsung jalan.
 
 ---
 
-## Verification
+## Verifikasi
 
-- Frontend: `npm run lint` (oxlint) — 0 errors; `npm run build` passes
-- Backend: server starts, health check `GET /api/health` → `{"success": true}`
-- E2E: login → dashboard → patient registration → queue → SOAP examination
-  verified in browser with Playwright
+- Frontend: `npm run lint` (oxlint) — 0 error; `npm run build` berhasil
+- Backend: server berjalan, cek `GET /api/health` → `{"success": true}`
+- E2E: login → dashboard → pendaftaran pasien → antrean → pemeriksaan SOAP
+  sudah diuji di browser dengan Playwright
 
 ---
 
-## License
+## Lisensi
 
-ISC — for evaluation purposes.
+ISC — untuk keperluan penilaian.
