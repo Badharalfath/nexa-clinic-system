@@ -24,21 +24,30 @@ REST API, dan database PostgreSQL.
 
 ## Fitur Utama
 
-- **Login berbasis peran** — satu endpoint login, sistem yang menentukan peran:
+- **Login berbasis peran** satu endpoint login, sistem yang menentukan peran:
   `administrator`, `dokter`, `petugas_pendaftaran`
-- **Pengelolaan pasien** — tambah, ubah, lihat, hapus; NIK divalidasi harus
-  tepat 16 digit; nomor rekam medis dibuat otomatis (`RM-YYYYMM-XXXX`)
-- **Pendaftaran & antrean** — pendaftaran dengan keluhan dan jenis pembayaran,
-  nomor antrean (`U001`/`G001`), status `menunggu → dipanggil → pemeriksaan → selesai`
-- **Pemeriksaan (SOAP)** — Subjective, Objective (tekanan darah, suhu, berat
-  badan, tinggi badan), Assessment, Plan
-- **Tindakan & resep** — tercatat pada setiap pemeriksaan
-- **Arsip / hapus lunak** — pasien diarsipkan secara default (data klinis tidak
-  pernah hilang, sesuai aturan penyimpanan rekam medis); hapus permanen hanya
-  untuk administrator dengan transaksi berantai (cascade)
-- **Pasien terakhir diperiksa** — dashboard dokter menampilkan pasien yang baru
+- **Aksi cepat sesuai peran** dashboard hanya menampilkan menu/tombol yang
+  boleh diakses peran tersebut (mis. dokter tidak melihat pendaftaran baru
+  atau master data pasien)
+- **Pengelolaan pasien** tambah, ubah, lihat, hapus; NIK divalidasi tepat
+  16 digit (cek saat focus meninggalkan kolom); nomor rekam medis dibuat
+  otomatis (`RM-YYYYMM-XXXX`)
+- **Pendaftaran & antrean** pendaftaran dengan keluhan dan jenis pembayaran,
+  nomor antrean `U001`/`G001`, status `menunggu → dipanggil → pemeriksaan → selesai`
+- **Pemeriksaan (SOAP)** Subjective, Objective (tekanan darah, suhu, berat
+  badan, tinggi badan), Assessment, Plan; kolom wajib (S/A/P) dan opsional
+  (O) ditandai jelas, keluhan terisi otomatis dari pendaftaran, biaya
+  tindakan ditampilkan dalam format Rupiah
+- **Tindakan & resep** tercatat pada setiap pemeriksaan
+- **Arsip / hapus lunak** pasien yang dihapus diarsipkan secara default
+  (data klinis tidak pernah hilang, sesuai aturan penyimpanan rekam medis).
+  Pasien arsip hanya terlihat administrator (tab Arsip + badge);
+  peran lain melihatnya sebagai data yang sudah hilang. Hapus permanen
+  (cascade) hanya untuk administrator; petugas yang "menghapus" sebenarnya
+  mengarsipkan
+- **Pasien terakhir diperiksa** dashboard dokter menampilkan pasien yang baru
   saja diperiksa
-- **Tampilan responsif** — sidebar rail + drawer, nyaman di desktop maupun HP
+- **Tampilan responsif** sidebar rail & drawer, nyaman di desktop maupun HP
 
 ---
 
@@ -63,10 +72,10 @@ nexa-clinic-system/
 ├── frontend/
 │   ├── src/
 │   │   ├── api/            # klien axios
-│   │   ├── components/     # komponen bersama (Icon.jsx, Sidebar, dll.)
+│   │   ├── components/     # komponen bersama (Icon, ProtectedRoute, dll.)
 │   │   ├── context/        # AuthContext
-│   │   ├── pages/          # Auth, Dashboard, Patients, Registrations,
-│   │   │                   # Queues, MedicalRecords, MasterData
+│   │   ├── pages/          # Auth, Dashboard, Layout, Patients,
+│   │   │                   # Registrations, Queues, MedicalRecords
 │   │   └── utils/
 │   ├── .env.example
 │   └── package.json
@@ -143,8 +152,6 @@ Setelah itu buka **http://localhost:5174** di browser.
 | Petugas pendaftaran | `petugas1` |
 
 Semua akun demo memakai password yang sama (lihat `backend/src/seeders/seed.js`).
-Halaman login juga menyediakan tombol akun demo yang bisa diklik untuk mengisi
-username otomatis.
 
 ---
 
@@ -165,7 +172,7 @@ Base URL: `http://localhost:5000/api`
 | GET | `/patients/:id/related-counts` | Jumlah data terkait pasien | Sudah login |
 | POST | `/patients` | Tambah pasien | admin / petugas |
 | PUT | `/patients/:id` | Ubah pasien | admin / petugas |
-| DELETE | `/patients/:id` | Arsipkan pasien (hapus lunak) | Administrator |
+| DELETE | `/patients/:id` | Arsipkan pasien (hapus lunak) | admin / petugas |
 | DELETE | `/patients/:id/permanent` | Hapus permanen (cascade) | Administrator |
 | GET | `/registrations` | Daftar pendaftaran | Sudah login |
 | POST | `/registrations` | Buat pendaftaran | admin / petugas |
