@@ -93,7 +93,7 @@ export default function LoginPage() {
           </form>
 
           <div className="login-footer">
-            <p>Password semua akun demo: <strong>password123</strong></p>
+            <p>Klik kartu akun demo di samping untuk mengisi form login otomatis.</p>
           </div>
         </div>
 
@@ -114,7 +114,7 @@ export default function LoginPage() {
                 <span className="demo-account-info">
                   <strong>{acc.label}</strong>
                   <small>{acc.role}</small>
-                  <code>{acc.u} / {acc.p}</code>
+                  <code className="demo-account-hint">Klik untuk mengisi otomatis</code>
                 </span>
                 <Icon name="chevronRight" size={15} className="demo-account-arrow" />
               </button>

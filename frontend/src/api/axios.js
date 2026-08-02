@@ -65,7 +65,11 @@ if (USE_MOCK) {
       if (error.response?.status === 401) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        window.location.href = '/login';
+        // Jangan redirect saat login gagal — biarkan form menampilkan error
+        const isLoginRequest = error.config?.url?.includes('/auth/login');
+        if (!isLoginRequest) {
+          window.location.href = '/login';
+        }
       }
       return Promise.reject(error);
     }
