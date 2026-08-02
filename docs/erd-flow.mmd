@@ -1,29 +1,27 @@
 flowchart LR
     %% ============================================================
-    %% ERD — Mini Clinic Information System (gaya flowchart alur tunggal)
-    %% Semua node segiempat, panah satu arah, label relasi di tepi
+    %% ERD — Mini Clinic Information System
+    %% Gaya referensi: semua node rounded rectangle, alur satu arah,
+    %% hitam-putih, kolom ringkas, 8 relasi berlabel
     %% ============================================================
 
-    subgraph MASTER["Master Data"]
-        U[USERS<br/>id · username · role] 
-        PC[POLYCLINICS<br/>id · name]
-        P[PATIENTS<br/>id · no RM · nik · name]
-    end
+    classDef tbl fill:#ffffff,stroke:#111111,stroke-width:1.5px,color:#111111,font-weight:700;
+    classDef lbl fill:#ffffff,stroke:none,color:#111111,font-weight:400;
 
-    subgraph ALUR["Alur Pelayanan"]
-        R[REGISTRATIONS<br/>id · patient_id · doctor_id<br/>polyclinic_id · status]
-        Q[QUEUES<br/>id · registration_id<br/>queue_number · status]
-        M[MEDICAL_RECORDS<br/>id · registration_id<br/>patient_id · doctor_id · SOAP]
-        A[MEDICAL_ACTIONS<br/>id · medical_record_id<br/>action_name · cost]
-        PR[PRESCRIPTIONS<br/>id · medical_record_id<br/>drug_name · dosage]
-    end
+    USER(USER<br/>id<br/>username<br/>role):::tbl
+    PATIENT(PATIENT<br/>id<br/>nik<br/>name):::tbl
+    POLYCLINIC(POLYCLINIC<br/>id<br/>name<br/>description):::tbl
+    REGISTRATION(REGISTRATION<br/>id<br/>registration_date<br/>complaint):::tbl
+    QUEUE(QUEUE<br/>id<br/>queue_number<br/>status):::tbl
+    MEDICAL_RECORD(MEDICAL_RECORD<br/>id<br/>diagnosis<br/>soap_note):::tbl
+    MEDICAL_ACTION(MEDICAL_ACTION<br/>id<br/>description<br/>cost):::tbl
+    PRESCRIPTION(PRESCRIPTION<br/>id<br/>drug_name<br/>dosage<br/>cost):::tbl
 
-    U -->|"dokter menangani"| R
-    PC -->|"poli tujuan"| R
-    P -->|"mendaftar"| R
-    R -->|"menghasilkan 1 antrean"| Q
-    R -->|"pemeriksaan SOAP"| M
-    P -->|"memiliki riwayat"| M
-    U -->|"dokter memeriksa"| M
-    M -->|"memiliki tindakan"| A
-    M -->|"memiliki resep"| PR
+    USER -->|handles| REGISTRATION
+    PATIENT -->|registers| REGISTRATION
+    POLYCLINIC -->|serves| REGISTRATION
+    REGISTRATION -->|generates| QUEUE
+    REGISTRATION -->|examination| MEDICAL_RECORD
+    PATIENT -->|owns| MEDICAL_RECORD
+    MEDICAL_RECORD -->|includes| MEDICAL_ACTION
+    MEDICAL_RECORD -->|prescribes| PRESCRIPTION
